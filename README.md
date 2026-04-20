@@ -89,7 +89,7 @@ See `RTK.md` for the full command reference and `AGENTS.md` for AI agent instruc
 ### 1. Install
 
 ```bash
-git clone https://github.com/your-username/lucy-qa.git
+git clone https://github.com/norchcode/lucy-qa.git
 cd lucy-qa
 pnpm install
 ```
