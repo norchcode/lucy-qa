@@ -1,0 +1,10 @@
+{
+  "name": "@lucy-qa/rtk-filter",
+  "version": "0.1.0",
+  "description": "RTK (Rust Token Killer) detection and command wrapping for Lucy QA",
+  "type": "module",
+  "main": "src/index.mjs",
+  "exports": {
+    ".": "./src/index.mjs"
+  }
+}

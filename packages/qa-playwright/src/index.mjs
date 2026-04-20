@@ -3,6 +3,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { execFileSync, spawn } from 'node:child_process';
 import { analyzeQaFailurePatterns, clusterQaDefects } from '../../../packages/qa-knowledge/src/index.mjs';
+import { buildRtkSpawnArgs, isRtkAvailable } from '../../../packages/rtk-filter/src/index.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -704,7 +705,7 @@ export const runPlaywrightSuite = async ({
   const plan = createPlaywrightRunPlan({ target, artifactsRoot, baseURL, workers, intake });
   writePlaywrightConfig(plan, { intake, docsContext });
 
-  const commandArgs = [
+  const rawArgs = [
     ...runnerArgs,
     target,
     '--config',
@@ -712,8 +713,12 @@ export const runPlaywrightSuite = async ({
     '--reporter=json'
   ].filter(Boolean);
 
+  // Wrap through RTK to compress Playwright test output (typically 90% token savings)
+  const { command: resolvedCommand, args: commandArgs } = buildRtkSpawnArgs(runnerCommand, rawArgs);
+  const rtkApplied = isRtkAvailable() && resolvedCommand === 'rtk';
+
   const execution = await spawnCommand({
-    command: runnerCommand,
+    command: resolvedCommand,
     args: commandArgs,
     cwd
   });
@@ -776,7 +781,9 @@ export const runPlaywrightSuite = async ({
     execution_profile: plan.execution_profile,
     command: {
       runner: runnerCommand,
+      resolved_runner: resolvedCommand,
       args: commandArgs,
+      rtk_applied: rtkApplied,
       cwd
     },
     recording: plan.recording,

@@ -1,12 +1,17 @@
 import { spawn } from 'node:child_process';
+import { wrapCommandWithRtk, isRtkAvailable } from '../../../packages/rtk-filter/src/index.mjs';
 
 export const runQaExecCommand = async ({ command, cwd = process.cwd(), timeoutMs = 120000 }) => {
   if (!command?.trim()) {
     throw new Error('Command is required');
   }
 
+  const rtkAvailable = isRtkAvailable();
+  const resolvedCommand = rtkAvailable ? wrapCommandWithRtk(command) : command;
+  const rtkApplied = rtkAvailable && resolvedCommand !== command;
+
   return await new Promise((resolve, reject) => {
-    const child = spawn(command, {
+    const child = spawn(resolvedCommand, {
       cwd,
       shell: true,
       stdio: ['ignore', 'pipe', 'pipe']
@@ -39,6 +44,8 @@ export const runQaExecCommand = async ({ command, cwd = process.cwd(), timeoutMs
       resolve({
         implemented: true,
         command,
+        resolved_command: resolvedCommand,
+        rtk_applied: rtkApplied,
         cwd,
         timeout_ms: timeoutMs,
         exit_code: code ?? (timedOut ? 124 : 1),

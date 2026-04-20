@@ -59,6 +59,31 @@ Available models: `MiniMax-Text-01` (balanced, 1M ctx), `MiniMax-M1` (reasoning)
 
 ---
 
+## Token compression with RTK
+
+Lucy QA integrates [RTK (Rust Token Killer)](https://github.com/rtk-ai/rtk) — a Rust binary that filters command output before it reaches the LLM context, reducing token usage by **60-90%** on git, test runs, file reads, and other common commands.
+
+```bash
+# Install RTK (Linux / macOS)
+sh scripts/install-rtk.sh
+
+# Check status
+node apps/cli/src/index.mjs rtk status
+```
+
+Once RTK is installed, `qa exec` and `qa run` automatically wrap commands through it. No config needed — it's detected at runtime and falls back gracefully if not installed.
+
+| Command | Without RTK | With RTK | Savings |
+|---|---|---|---|
+| `git status` | ~600 tokens | ~120 tokens | -80% |
+| `npx playwright test` (fail) | ~25,000 tokens | ~2,500 tokens | -90% |
+| `git diff` | ~10,000 tokens | ~2,500 tokens | -75% |
+| `node tests/integration/...` | ~3,000 tokens | ~300 tokens | -90% |
+
+See `RTK.md` for the full command reference and `AGENTS.md` for AI agent instructions.
+
+---
+
 ## Quick start
 
 ### 1. Install

@@ -37,6 +37,7 @@ import { buildQaIntegrationReadiness } from './qa-integrations.mjs';
 import { publishQaRunToTestManagement } from './qa-qase.mjs';
 import { runQaExecCommand } from './qa-exec.mjs';
 import { loadQaLearningState, runQaSelfImprovementPass } from './qa-learning.mjs';
+import { getRtkStatus, isRtkAvailable } from '../../../packages/rtk-filter/src/index.mjs';
 import { runMemorySaveCommand, runMemorySearchCommand } from './memory.mjs';
 import {
   runStateSaveSessionCommand,
@@ -167,6 +168,8 @@ const printFirstRunBanner = () => {
   console.log(colorMeta(`version: ${CLI_VERSION}`));
   console.log(colorMeta(`provider: ${badges.provider ?? 'auto'}`));
   console.log(colorMeta(`model: ${badges.model ?? 'auto'}`));
+  const rtkBadge = isRtkAvailable() ? 'rtk: active (token compression on)' : 'rtk: not installed (run scripts/install-rtk.sh)';
+  console.log(colorMeta(rtkBadge));
   console.log(colorize('available: plan | run | report | file bugs', ansi.blue));
 };
 
@@ -1050,7 +1053,8 @@ const printExecResult = (result, mode = 'detailed') => {
     `- exit_code: ${result.exit_code}`,
     `- timed_out: ${result.timed_out ? 'yes' : 'no'}`,
     `- cwd: ${result.cwd}`,
-    `- command: ${result.command}`
+    `- command: ${result.command}`,
+    `- rtk: ${result.rtk_applied ? `active (resolved: ${result.resolved_command})` : 'not applied'}`
   ];
 
   if (mode === 'plain') {
@@ -1097,7 +1101,8 @@ const printRunResult = (result, mode = 'detailed') => {
     `- flaky: ${result.summary.flaky}`,
     `- videos: ${result.artifacts.videos.length}`,
     `- traces: ${result.artifacts.traces.length}`,
-    `- screenshots: ${result.artifacts.screenshots.length}`
+    `- screenshots: ${result.artifacts.screenshots.length}`,
+    `- rtk: ${result.command?.rtk_applied ? `active (runner: ${result.command.resolved_runner})` : 'not applied'}`
   ];
 
   if (mode === 'plain') {
@@ -1447,6 +1452,7 @@ if (args.length === 0) {
   console.log('- qa defects update <signature> [--bug-id <id>] [--tracker <system>] [--tracker-url <url>] [--tracker-title <title>] [--tracker-status <status>] [--status <defect-status>] [--target-url <url>] [--vault <path>] [--plain|--detailed|--trace]');
   console.log('- qa defects file-remote <signature> [--tracker <system>] [--project <key>] [--issue-type <name>] [--title <title>] [--target-url <url>] [--vault <path>] [--plain|--detailed|--trace]');
   console.log('- qa exec <command> [--cwd <path>] [--timeout <ms>] [--plain|--detailed|--trace]');
+  console.log('- rtk status');
   process.exit(0);
 }
 
@@ -2250,6 +2256,22 @@ if (args[0] === 'qa' && args[1] === 'exec') {
     ]);
     process.exit(1);
   }
+}
+
+if (args[0] === 'rtk' && args[1] === 'status') {
+  const rtkStatus = getRtkStatus();
+  printSection('RTK status', [
+    `- available: ${rtkStatus.available ? 'yes' : 'no'}`,
+    `- version: ${rtkStatus.version ?? 'not installed'}`,
+    `- enabled: ${rtkStatus.enabled ? 'yes' : 'no (LUCY_QA_RTK_ENABLED=false)'}`,
+    `- effect: ${rtkStatus.available ? 'qa exec and qa run output is compressed before reaching LLM context' : 'none'}`
+  ]);
+  if (rtkStatus.install_hint) {
+    console.log('');
+    console.log('Setup');
+    rtkStatus.install_hint.forEach((line) => console.log(`  ${line}`));
+  }
+  process.exit(0);
 }
 
 printSection('Lucy QA command not recognized', [
