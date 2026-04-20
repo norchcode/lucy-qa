@@ -1,0 +1,17 @@
+{
+  "name": "lucy-qa",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Personal agentic AI for QA, Playwright, research, and Obsidian-backed memory",
+  "packageManager": "pnpm@10.0.0",
+  "scripts": {
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "test": "turbo run test",
+    "lint": "turbo run lint",
+    "doctor": "node ./scripts/doctor.mjs"
+  },
+  "devDependencies": {
+    "turbo": "^2.0.0"
+  }
+}

@@ -1,0 +1,132 @@
+{
+  "default_provider": "openai-codex",
+  "providers": {
+    "openai-codex": {
+      "type": "native-codex-oauth",
+      "enabled": true,
+      "oauth_provider": "openai-codex",
+      "oauth_client_id": "app_EMoamEEZ73f0CkXaXp7hrann",
+      "oauth_redirect_uri": "http://localhost:1455/auth/callback",
+      "authorization_endpoint": "https://auth.openai.com/oauth/authorize",
+      "token_endpoint": "https://auth0.openai.com/oauth/token",
+      "transport": "codex-cli",
+      "api_base_url": "https://api.openai.com/v1",
+      "model": "gpt-5.4",
+      "default_model": "gpt-5.4",
+      "available_models": ["gpt-5.4", "gpt-5.4-mini", "gpt-5.3-codex", "gpt-5.2-codex", "gpt-5.2", "gpt-5.1-codex-max", "gpt-5.1-codex", "gpt-5.1", "gpt-5-codex", "gpt-5", "gpt-5.1-codex-mini", "gpt-5-codex-mini"],
+      "model_aliases": {
+        "balanced": "gpt-5.4",
+        "fast": "gpt-5.4-mini",
+        "deep_reasoning": "gpt-5.2",
+        "legacy_codex": "gpt-5.3-codex"
+      },
+      "task_model_preferences": {
+        "qa": ["balanced", "fast"],
+        "research": ["deep_reasoning", "balanced"],
+        "coding": ["balanced", "fast", "legacy_codex"],
+        "uiux": ["balanced", "fast"]
+      },
+      "token_store": "~/.codex/auth.json",
+      "models_cache": "~/.codex/models_cache.json",
+      "timeout_ms": 120000,
+      "default_headers": {}
+    },
+    "gcli2api-local": {
+      "type": "openai-compatible",
+      "enabled": true,
+      "label": "gcli2api local bridge",
+      "base_url": "http://127.0.0.1:7861/v1",
+      "api_key": "***",
+      "api_key_env": "LUCY_GCLI2API_API_KEY",
+      "model": "gemini-2.5-pro",
+      "default_model": "gemini-2.5-pro",
+      "timeout_ms": 120000,
+      "default_headers": {},
+      "available_models": ["gemini-2.5-pro", "gemini-2.5-flash", "glm-4.5", "qwen-max"],
+      "model_aliases": {
+        "balanced": "gemini-2.5-pro",
+        "fast": "gemini-2.5-flash",
+        "deep_reasoning": "glm-4.5",
+        "long_context": "qwen-max",
+        "coding_glm": "glm-4.5",
+        "coding_alibaba": "qwen-max"
+      },
+      "task_model_preferences": {
+        "qa": ["balanced", "deep_reasoning", "fast"],
+        "research": ["deep_reasoning", "balanced", "long_context"],
+        "coding": ["coding_glm", "balanced", "coding_alibaba"],
+        "uiux": ["balanced", "long_context", "fast"]
+      },
+      "streaming": true,
+      "notes": [
+        "Designed for OpenAI-compatible proxy bridges such as gcli2api.",
+        "Exact supported model names depend on the bridge configuration.",
+        "Commercial usage may be restricted by upstream license; verify before use."
+      ]
+    },
+    "glm": {
+      "type": "openai-compatible",
+      "enabled": true,
+      "label": "Zhipu AI GLM",
+      "base_url": "https://open.bigmodel.cn/api/paas/v4",
+      "api_key": "***",
+      "api_key_env": "ZHIPU_API_KEY",
+      "model": "glm-4-plus",
+      "default_model": "glm-4-plus",
+      "timeout_ms": 120000,
+      "default_headers": {},
+      "available_models": ["glm-4-plus", "glm-4-air", "glm-4-airx", "glm-4-flash", "glm-4v-plus", "glm-z1-plus", "glm-z1-air"],
+      "model_aliases": {
+        "balanced": "glm-4-plus",
+        "fast": "glm-4-flash",
+        "vision": "glm-4v-plus",
+        "reasoning": "glm-z1-plus",
+        "air": "glm-4-air"
+      },
+      "task_model_preferences": {
+        "qa": ["balanced", "fast"],
+        "research": ["reasoning", "balanced"],
+        "coding": ["balanced", "reasoning"],
+        "uiux": ["balanced", "vision", "fast"]
+      },
+      "streaming": true,
+      "notes": [
+        "Get an API key from https://open.bigmodel.cn — set ZHIPU_API_KEY or GLM_API_KEY.",
+        "The GLM-4 family supports Chinese and English natively.",
+        "glm-4-flash is the fastest and cheapest tier; glm-4-plus is the most capable."
+      ]
+    },
+    "minimax": {
+      "type": "openai-compatible",
+      "enabled": true,
+      "label": "MiniMax",
+      "base_url": "https://api.minimax.chat/v1",
+      "api_key": "***",
+      "api_key_env": "MINIMAX_API_KEY",
+      "model": "MiniMax-Text-01",
+      "default_model": "MiniMax-Text-01",
+      "timeout_ms": 120000,
+      "default_headers": {},
+      "available_models": ["MiniMax-Text-01", "MiniMax-M1", "abab6.5s-chat", "abab6.5g-chat", "abab5.5s-chat"],
+      "model_aliases": {
+        "balanced": "MiniMax-Text-01",
+        "fast": "abab6.5s-chat",
+        "reasoning": "MiniMax-M1",
+        "long_context": "MiniMax-Text-01"
+      },
+      "task_model_preferences": {
+        "qa": ["balanced", "fast"],
+        "research": ["reasoning", "long_context"],
+        "coding": ["balanced", "reasoning"],
+        "uiux": ["balanced", "fast"]
+      },
+      "streaming": true,
+      "notes": [
+        "Get an API key from https://www.minimax.chat — set MINIMAX_API_KEY.",
+        "MiniMax-Text-01 supports 1M context and is the flagship model.",
+        "MiniMax-M1 is a reasoning model with extended thinking capabilities.",
+        "The abab series are older tiers; prefer MiniMax-Text-01 for new projects."
+      ]
+    }
+  }
+}

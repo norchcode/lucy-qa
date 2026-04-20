@@ -1,0 +1,12 @@
+{
+  "name": "@lucy-qa/context7-client",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "src/index.mjs",
+  "scripts": {
+    "build": "node -e \"console.log('context7-client build placeholder')\"",
+    "test": "node -e \"console.log('context7-client test placeholder')\"",
+    "lint": "node -e \"console.log('context7-client lint placeholder')\""
+  }
+}

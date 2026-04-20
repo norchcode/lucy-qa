@@ -1,0 +1,47 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Build outputs
+dist/
+build/
+*.tsbuildinfo
+
+# Local config (user secrets, keys)
+config/providers.local.json
+
+# Vault (personal workspace data - not for public repos)
+vault/
+
+# Playwright artifacts and run outputs
+artifacts/playwright/runs/
+test-results/
+playwright-report/
+
+# Obsidian workspace state
+.obsidian/workspace.json
+.obsidian/workspace-mobile.json
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# Turbo cache
+.turbo/
+
+# Test temp dirs (normally cleaned up, belt-and-suspenders)
+/tmp/lucy-qa-*/
