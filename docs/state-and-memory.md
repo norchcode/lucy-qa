@@ -139,7 +139,7 @@ That means when the session restarts, Lucy QA can recover:
 ## Startup and resume behavior
 
 Current behavior on fresh boot:
-1. Running `node apps/cli/src/index.mjs` inspects persisted state automatically
+1. Running `lucy` inspects persisted state automatically
 2. If resumable context exists, Lucy QA offers:
    - `state resume`
    - `state new-session`

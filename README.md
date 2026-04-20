@@ -41,7 +41,7 @@ GLM-4 models support Chinese and English natively. Get an API key at [open.bigmo
 
 ```bash
 export ZHIPU_API_KEY=your_key_here
-node apps/cli/src/index.mjs provider setup glm --preset glm --api-key-env ZHIPU_API_KEY --set-default
+lucy provider setup glm --preset glm --api-key-env ZHIPU_API_KEY --set-default
 ```
 
 Available models: `glm-4-plus` (balanced), `glm-4-flash` (fast), `glm-4v-plus` (vision), `glm-z1-plus` (reasoning), `glm-4-air` (lightweight).
@@ -52,7 +52,7 @@ MiniMax-Text-01 has 1M context. MiniMax-M1 adds reasoning/thinking capabilities.
 
 ```bash
 export MINIMAX_API_KEY=your_key_here
-node apps/cli/src/index.mjs provider setup minimax --preset minimax --api-key-env MINIMAX_API_KEY --set-default
+lucy provider setup minimax --preset minimax --api-key-env MINIMAX_API_KEY --set-default
 ```
 
 Available models: `MiniMax-Text-01` (balanced, 1M ctx), `MiniMax-M1` (reasoning), `abab6.5s-chat` (fast).
@@ -68,7 +68,7 @@ Lucy QA integrates [RTK (Rust Token Killer)](https://github.com/rtk-ai/rtk) — 
 sh scripts/install-rtk.sh
 
 # Check status
-node apps/cli/src/index.mjs rtk status
+lucy rtk status
 ```
 
 Once RTK is installed, `qa exec` and `qa run` automatically wrap commands through it. No config needed — it's detected at runtime and falls back gracefully if not installed.
@@ -92,6 +92,15 @@ See `RTK.md` for the full command reference and `AGENTS.md` for AI agent instruc
 git clone https://github.com/norchcode/lucy-qa.git
 cd lucy-qa
 pnpm install
+pnpm run install:lucy
+```
+
+Now you can use the agent directly:
+
+```bash
+lucy
+lucy agent "review the latest run and draft bugs"
+lucy qa plan "checkout regression coverage"
 ```
 
 ### 2. Pick a provider
@@ -99,32 +108,32 @@ pnpm install
 ```bash
 # GitHub Copilot (if you have a Copilot subscription)
 export COPILOT_GITHUB_TOKEN=your_token
-node apps/cli/src/index.mjs provider setup github-copilot --preset github-copilot --api-key-env COPILOT_GITHUB_TOKEN --set-default
+lucy provider setup github-copilot --preset github-copilot --api-key-env COPILOT_GITHUB_TOKEN --set-default
 
 # GLM (Zhipu AI)
 export ZHIPU_API_KEY=your_key
-node apps/cli/src/index.mjs provider setup glm --preset glm --api-key-env ZHIPU_API_KEY --set-default
+lucy provider setup glm --preset glm --api-key-env ZHIPU_API_KEY --set-default
 
 # MiniMax
 export MINIMAX_API_KEY=your_key
-node apps/cli/src/index.mjs provider setup minimax --preset minimax --api-key-env MINIMAX_API_KEY --set-default
+lucy provider setup minimax --preset minimax --api-key-env MINIMAX_API_KEY --set-default
 
 # AdaCODE
 export ADACODE_API_KEY=your_key
-node apps/cli/src/index.mjs provider setup adacode --preset adacode --api-key-env ADACODE_API_KEY --set-default
+lucy provider setup adacode --preset adacode --api-key-env ADACODE_API_KEY --set-default
 
 # OpenAI Codex (native OAuth via codex CLI)
-node apps/cli/src/index.mjs provider use openai-codex
+lucy provider use openai-codex
 ```
 
 ### 3. Set up your QA workspace
 
 ```bash
 # Tell Lucy QA which systems your team uses (conversational)
-node apps/cli/src/index.mjs qa onboarding "we use qase project WEB and jira project QA"
+lucy qa onboarding "we use qase project WEB and jira project QA"
 
 # Or use flags
-node apps/cli/src/index.mjs qa onboarding \
+lucy qa onboarding \
   --qa-test-management Qase --qa-project WEB \
   --issue-tracker Jira --issue-project QA \
   --jira-base-url https://yourco.atlassian.net \
@@ -138,35 +147,35 @@ node apps/cli/src/index.mjs qa onboarding \
 
 ```bash
 # Generate a test plan
-node apps/cli/src/index.mjs qa plan "E2E plan for checkout flow" --target-url https://example.com/checkout
+lucy qa plan "E2E plan for checkout flow" --target-url https://example.com/checkout
 
 # Generate atomic test cases
-node apps/cli/src/index.mjs qa cases "Login page — positive and negative coverage" --target-url https://example.com/login
+lucy qa cases "Login page — positive and negative coverage" --target-url https://example.com/login
 
 # Generate a Playwright starter
-node apps/cli/src/index.mjs qa playwright "Login smoke test with error state coverage" --target-url https://example.com/login
+lucy qa playwright "Login smoke test with error state coverage" --target-url https://example.com/login
 
 # Run a spec
-node apps/cli/src/index.mjs qa run tests/e2e/login.spec.js --base-url https://example.com
+lucy qa run tests/e2e/login.spec.js --base-url https://example.com
 
 # Summarize a run
-node apps/cli/src/index.mjs qa report artifacts/playwright/runs/<run-id>
+lucy qa report artifacts/playwright/runs/<run-id>
 
 # Draft bugs from a failed run
-node apps/cli/src/index.mjs qa bugs --from-run artifacts/playwright/runs/<run-id>
+lucy qa bugs --from-run artifacts/playwright/runs/<run-id>
 
 # Draft a single bug from a finding
-node apps/cli/src/index.mjs qa bug "Login button unresponsive after failed OTP entry on iOS Safari"
+lucy qa bug "Login button unresponsive after failed OTP entry on iOS Safari"
 
 # Publish a run to Qase
-node apps/cli/src/index.mjs qa report publish artifacts/playwright/runs/<run-id> --close-run
+lucy qa report publish artifacts/playwright/runs/<run-id> --close-run
 
 # File a defect to Jira
-node apps/cli/src/index.mjs qa defects file-remote login|assertion|error-surface-missing|login \
+lucy qa defects file-remote login|assertion|error-surface-missing|login \
   --target-url https://example.com/login
 
 # Autonomous agent mode
-node apps/cli/src/index.mjs agent "draft and file bugs from the latest run"
+lucy agent "draft and file bugs from the latest run"
 ```
 
 ---
@@ -175,27 +184,27 @@ node apps/cli/src/index.mjs agent "draft and file bugs from the latest run"
 
 ```bash
 # List configured providers
-node apps/cli/src/index.mjs provider list
+lucy provider list
 
 # List available presets
-node apps/cli/src/index.mjs provider presets
+lucy provider presets
 
 # Show active provider details
-node apps/cli/src/index.mjs provider show
+lucy provider show
 
 # Switch active provider
-node apps/cli/src/index.mjs provider use glm
+lucy provider use glm
 
 # Discover available models for a provider
-node apps/cli/src/index.mjs provider models glm
+lucy provider models glm
 
 # Set a default model for a provider
-node apps/cli/src/index.mjs provider default-model glm glm-4-air
+lucy provider default-model glm glm-4-air
 
 # Conversational setup (no flags needed)
-node apps/cli/src/index.mjs provider setup "use minimax and make it default"
-node apps/cli/src/index.mjs provider setup "use glm"
-node apps/cli/src/index.mjs provider setup "use github copilot and make it default"
+lucy provider setup "use minimax and make it default"
+lucy provider setup "use glm"
+lucy provider setup "use github copilot and make it default"
 ```
 
 ---
@@ -204,24 +213,24 @@ node apps/cli/src/index.mjs provider setup "use github copilot and make it defau
 
 ```bash
 # Save a QA note to the vault
-node apps/cli/src/index.mjs memory save "Checkout regression coverage" \
+lucy memory save "Checkout regression coverage" \
   --content "Covered: add-to-cart, promo, payment, confirmation" --category regression
 
 # Search notes
-node apps/cli/src/index.mjs memory search "checkout"
+lucy memory search "checkout"
 
 # View session startup state
-node apps/cli/src/index.mjs state startup
+lucy state startup
 
 # View session state and journal
-node apps/cli/src/index.mjs state show
-node apps/cli/src/index.mjs state journal
+lucy state show
+lucy state journal
 
 # Resume last session
-node apps/cli/src/index.mjs state resume
+lucy state resume
 
 # Start a new session for a project
-node apps/cli/src/index.mjs state new-session --project checkout-web
+lucy state new-session --project checkout-web
 ```
 
 ---
@@ -300,7 +309,7 @@ lucy-qa/
 
 ## Running tests
 
-Each smoke test is a self-contained Node.js script — no test runner required.
+The main CLI should be used through the installed `lucy` command. Integration smoke tests remain self-contained Node.js scripts with no external test runner required.
 
 ```bash
 # Run a specific test

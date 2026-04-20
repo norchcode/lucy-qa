@@ -3,9 +3,9 @@
 Lucy QA now has an initial connect/discovery/default-model persistence flow.
 
 ## Current commands
-- `node apps/cli/src/index.mjs provider connect <name>`
-- `node apps/cli/src/index.mjs provider models <name>`
-- `node apps/cli/src/index.mjs provider default-model <name> <model>`
+- `lucy provider connect <name>`
+- `lucy provider models <name>`
+- `lucy provider default-model <name> <model>`
 
 ## Current behavior
 - `provider connect` marks the provider as connected in local state

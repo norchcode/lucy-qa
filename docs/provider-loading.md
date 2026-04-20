@@ -14,9 +14,9 @@ Lucy QA now has an initial provider-loading layer.
   - default provider resolution
 
 ## Current CLI placeholders
-- `node apps/cli/src/index.mjs provider list`
-- `node apps/cli/src/index.mjs provider show openai-codex`
-- `node apps/cli/src/index.mjs provider show gcli2api-local`
+- `lucy provider list`
+- `lucy provider show openai-codex`
+- `lucy provider show gcli2api-local`
 
 ## Next implementation step
 Turn provider resolution into actual request routing so Lucy QA can send prompts through:

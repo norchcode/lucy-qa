@@ -16,7 +16,7 @@ curl -fsSL https://install.rtk-ai.app | sh
 
 # Verify
 rtk --version
-node apps/cli/src/index.mjs rtk status
+lucy rtk status
 ```
 
 ## Drop-in command replacements
@@ -48,7 +48,7 @@ RTK is automatically applied when available:
 
 Check status:
 ```bash
-node apps/cli/src/index.mjs rtk status
+lucy rtk status
 ```
 
 Disable for a single session:

@@ -72,20 +72,20 @@ If no flag is supplied, the default is `--detailed`.
 
 Example:
 ```bash
-node apps/cli/src/index.mjs auth login --provider openai-codex --method manual-oauth
-node apps/cli/src/index.mjs auth complete --provider openai-codex "http://localhost:1455/auth/callback?code=...&state=..."
-node apps/cli/src/index.mjs provider use openai-codex
-node apps/cli/src/index.mjs provider default-model openai-codex gpt-5.4-mini
+lucy auth login --provider openai-codex --method manual-oauth
+lucy auth complete --provider openai-codex "http://localhost:1455/auth/callback?code=...&state=..."
+lucy provider use openai-codex
+lucy provider default-model openai-codex gpt-5.4-mini
 ```
 
 ### 2. Boot Lucy QA and decide whether to resume
 
 Example:
 ```bash
-node apps/cli/src/index.mjs
-node apps/cli/src/index.mjs state startup --detailed
-node apps/cli/src/index.mjs state resume --detailed
-node apps/cli/src/index.mjs state new-session --project checkout-web --detailed
+lucy
+lucy state startup --detailed
+lucy state resume --detailed
+lucy state new-session --project checkout-web --detailed
 ```
 
 What the startup and resume commands do:
@@ -94,13 +94,13 @@ What the startup and resume commands do:
 - offer resume vs new-session actions on fresh boot
 - restore the last session summary, open tasks, bug drafts, last run context, and current journal
 - archive the previous active context when starting a fresh session
-- on the very first launch of a fresh vault, `node apps/cli/src/index.mjs` also prints a one-time Lucy QA QA cockpit screen with ASCII branding, ANSI styling, version/provider/model badges, QA power panels, integration status, and an onboarding handoff before showing the normal command list
+- on the very first launch of a fresh vault, `lucy` also prints a one-time Lucy QA QA cockpit screen with ASCII branding, ANSI styling, version/provider/model badges, QA power panels, integration status, and an onboarding handoff before showing the normal command list
 
 ### 2.5. Look up current framework docs
 
 Example:
 ```bash
-node apps/cli/src/index.mjs docs "playwright locator.filter" --detailed
+lucy docs "playwright locator.filter" --detailed
 ```
 
 What the docs command does:
@@ -115,8 +115,8 @@ What the docs command does:
 
 Example:
 ```bash
-node apps/cli/src/index.mjs memory save "Checkout staging note" --content "Login redirect is flaky on staging checkout." --category project --detailed
-node apps/cli/src/index.mjs memory search "staging checkout" --trace
+lucy memory save "Checkout staging note" --content "Login redirect is flaky on staging checkout." --category project --detailed
+lucy memory search "staging checkout" --trace
 ```
 
 What memory commands do:
@@ -129,7 +129,7 @@ What memory commands do:
 
 Example:
 ```bash
-node apps/cli/src/index.mjs qa plan "Create a QA plan for login page validation" --detailed
+lucy qa plan "Create a QA plan for login page validation" --detailed
 ```
 
 Expected output shape:
@@ -144,7 +144,7 @@ Expected output shape:
 
 Example:
 ```bash
-node apps/cli/src/index.mjs qa cases "Create atomic test cases for login page validation" --detailed
+lucy qa cases "Create atomic test cases for login page validation" --detailed
 ```
 
 Expected output shape:
@@ -158,7 +158,7 @@ Expected output shape:
 
 Example:
 ```bash
-node apps/cli/src/index.mjs qa playwright "Generate a Playwright starter for login page validation with smoke coverage" --detailed
+lucy qa playwright "Generate a Playwright starter for login page validation with smoke coverage" --detailed
 ```
 
 Expected output shape:
@@ -172,7 +172,7 @@ Expected output shape:
 
 Example:
 ```bash
-node apps/cli/src/index.mjs qa run tests/e2e/login.spec.js --base-url https://example.com --detailed
+lucy qa run tests/e2e/login.spec.js --base-url https://example.com --detailed
 ```
 
 What `qa run` does:
@@ -190,7 +190,7 @@ What `qa run` does:
 
 Example:
 ```bash
-node apps/cli/src/index.mjs qa report artifacts/playwright/runs/<run-id> --detailed
+lucy qa report artifacts/playwright/runs/<run-id> --detailed
 ```
 
 What `qa report` does:
@@ -204,8 +204,8 @@ What `qa report` does:
 
 Example:
 ```bash
-node apps/cli/src/index.mjs qa exec "ffmpeg -i input.webm output.mp4" --trace
-node apps/cli/src/index.mjs qa exec "bash scripts/run-regression.sh" --cwd /root/lucy-qa --timeout 300000 --detailed
+lucy qa exec "ffmpeg -i input.webm output.mp4" --trace
+lucy qa exec "bash scripts/run-regression.sh" --cwd /root/lucy-qa --timeout 300000 --detailed
 ```
 
 What `qa exec` does:
@@ -252,7 +252,7 @@ Recommended use cases for ffmpeg:
 
 Example:
 ```bash
-node apps/cli/src/index.mjs qa exec "ffmpeg -y -i artifacts/playwright/runs/<run-id>/test-results/videos/test.webm output.mp4" --trace
+lucy qa exec "ffmpeg -y -i artifacts/playwright/runs/<run-id>/test-results/videos/test.webm output.mp4" --trace
 ```
 
 ---
@@ -272,7 +272,7 @@ Example:
 ```bash
 export LUCY_QA_RUNNER_COMMAND=node
 export LUCY_QA_RUNNER_ARGS_JSON='["/path/to/custom-runner.mjs"]'
-node apps/cli/src/index.mjs qa run tests/e2e/login.spec.js --detailed
+lucy qa run tests/e2e/login.spec.js --detailed
 ```
 
 This is useful for:
@@ -362,21 +362,21 @@ Best for:
 
 ### Login QA end-to-end
 ```bash
-node apps/cli/src/index.mjs qa plan "Create a QA plan for login page validation"
-node apps/cli/src/index.mjs qa cases "Create atomic login test cases with positive and negative coverage"
-node apps/cli/src/index.mjs qa playwright "Generate a Playwright login smoke starter with recording guidance"
-node apps/cli/src/index.mjs qa run tests/e2e/login.spec.js --base-url https://example.com --trace
-node apps/cli/src/index.mjs qa report artifacts/playwright/runs/<run-id> --detailed
+lucy qa plan "Create a QA plan for login page validation"
+lucy qa cases "Create atomic login test cases with positive and negative coverage"
+lucy qa playwright "Generate a Playwright login smoke starter with recording guidance"
+lucy qa run tests/e2e/login.spec.js --base-url https://example.com --trace
+lucy qa report artifacts/playwright/runs/<run-id> --detailed
 ```
 
 ### Post-process a recorded test video
 ```bash
-node apps/cli/src/index.mjs qa exec "ffmpeg -y -i artifacts/playwright/runs/<run-id>/test-results/videos/test.webm artifacts/playwright/runs/<run-id>/test-results/videos/test.mp4" --trace
+lucy qa exec "ffmpeg -y -i artifacts/playwright/runs/<run-id>/test-results/videos/test.webm artifacts/playwright/runs/<run-id>/test-results/videos/test.mp4" --trace
 ```
 
 ### Run a helper shell script
 ```bash
-node apps/cli/src/index.mjs qa exec "bash scripts/run-login-regression.sh" --cwd /root/lucy-qa --timeout 300000 --detailed
+lucy qa exec "bash scripts/run-login-regression.sh" --cwd /root/lucy-qa --timeout 300000 --detailed
 ```
 
 ---

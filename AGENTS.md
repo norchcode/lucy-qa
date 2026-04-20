@@ -42,11 +42,11 @@ pnpm install
 node scripts/doctor.mjs
 
 # RTK status
-node apps/cli/src/index.mjs rtk status
+lucy rtk status
 
 # Provider setup
-node apps/cli/src/index.mjs provider presets --plain
-node apps/cli/src/index.mjs provider setup glm --preset glm --api-key-env ZHIPU_API_KEY --set-default
+lucy provider presets --plain
+lucy provider setup glm --preset glm --api-key-env ZHIPU_API_KEY --set-default
 
 # Run a single smoke test
 node tests/integration/provider-glm-smoke.mjs

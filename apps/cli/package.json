@@ -3,6 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
+  "bin": {
+    "lucy": "src/index.mjs",
+    "lucy-qa": "src/index.mjs"
+  },
   "scripts": {
     "dev": "node src/index.mjs",
     "build": "node -e \"console.log('cli build placeholder')\"",

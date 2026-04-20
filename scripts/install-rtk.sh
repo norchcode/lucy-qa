@@ -83,7 +83,7 @@ fi
 echo ""
 info "RTK installed successfully!"
 info "Lucy QA will now automatically use RTK to compress command output."
-info "Run: node apps/cli/src/index.mjs rtk status"
+info "Run: lucy rtk status"
 info ""
 info "To verify token savings: rtk gain"
 info "Docs: https://github.com/rtk-ai/rtk"

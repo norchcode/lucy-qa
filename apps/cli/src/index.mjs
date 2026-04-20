@@ -218,10 +218,10 @@ const printFirstRunOnboarding = async ({ vaultPath = null, startupState = null }
     '- status: setup needed',
     '- Lucy QA opened onboarding because this looks like a first run.',
     '- Save your stack with flags or a short answer such as:',
-    '- node apps/cli/src/index.mjs qa onboarding "we use qase project WEB and jira project QA"',
-    '- node apps/cli/src/index.mjs qa onboarding --qa-test-management <name> --qa-project <code> --issue-tracker <name> --issue-project <key-or-team>',
+    '- lucy qa onboarding "we use qase project WEB and jira project QA"',
+    '- lucy qa onboarding --qa-test-management <name> --qa-project <code> --issue-tracker <name> --issue-project <key-or-team>',
     '- Then add credentials with:',
-    '- node apps/cli/src/index.mjs qa onboarding --jira-base-url <url> --jira-email <email> --jira-api-token <token> --qase-api-token <token> --test-connections'
+    '- lucy qa onboarding --jira-base-url <url> --jira-email <email> --jira-api-token <token> --qase-api-token <token> --test-connections'
   ]);
   if (onboarding.questions?.length) {
     console.log('');
@@ -232,7 +232,7 @@ const printFirstRunOnboarding = async ({ vaultPath = null, startupState = null }
   }
   console.log('');
   console.log('Tip');
-  console.log('- Run node apps/cli/src/index.mjs qa onboarding --plain if you want the same prompts in compact form.');
+  console.log('- Run lucy qa onboarding --plain if you want the same prompts in compact form.');
   writeFirstRunState(vaultPath);
 };
 
@@ -268,7 +268,7 @@ const printOnboardingPrompt = async ({ vaultPath = process.env.LUCY_QA_VAULT_PAT
       console.log('');
       console.log('Integration setup');
       console.log('- Save masked credentials separately from onboarding with:');
-      console.log('- node apps/cli/src/index.mjs qa onboarding --jira-base-url <url> --jira-email <email> --jira-api-token <token> --qase-api-token <token> --test-connections');
+      console.log('- lucy qa onboarding --jira-base-url <url> --jira-email <email> --jira-api-token <token> --qase-api-token <token> --test-connections');
     }
     return;
   }
@@ -281,10 +281,10 @@ const printOnboardingPrompt = async ({ vaultPath = process.env.LUCY_QA_VAULT_PAT
     '- 3. Task/issue tracker: Jira, Linear, GitHub Issues, GitLab Issues, Azure DevOps, YouTrack, or none',
     '- 4. Optional issue-tracker project/team/key used there',
     '- Save it with flags or a short answer such as:',
-    '- node apps/cli/src/index.mjs qa onboarding "we use qase project WEB and jira project QA"',
-    '- node apps/cli/src/index.mjs qa onboarding --qa-test-management <name> --qa-project <code> --issue-tracker <name> --issue-project <key-or-team>',
+    '- lucy qa onboarding "we use qase project WEB and jira project QA"',
+    '- lucy qa onboarding --qa-test-management <name> --qa-project <code> --issue-tracker <name> --issue-project <key-or-team>',
     '- Then add credentials with:',
-    '- node apps/cli/src/index.mjs qa onboarding --jira-base-url <url> --jira-email <email> --jira-api-token <token> --qase-api-token <token> --test-connections'
+    '- lucy qa onboarding --jira-base-url <url> --jira-email <email> --jira-api-token <token> --qase-api-token <token> --test-connections'
   ]);
 };
 
@@ -608,9 +608,9 @@ const printStartupStateResult = (result, mode = 'detailed') => {
   }
   console.log('');
   console.log('Choose next action');
-  console.log('- Resume previous session: node apps/cli/src/index.mjs state resume');
-  console.log('- Start a new session: node apps/cli/src/index.mjs state new-session --project <name>');
-  console.log('- Review full state first: node apps/cli/src/index.mjs state show --trace');
+  console.log('- Resume previous session: lucy state resume');
+  console.log('- Start a new session: lucy state new-session --project <name>');
+  console.log('- Review full state first: lucy state show --trace');
 };
 
 const printStateResumeResult = (result, mode = 'detailed') => {
@@ -1772,7 +1772,7 @@ if (args[0] === 'ask') {
     console.log('');
     console.log('Tip');
     console.log('- If the active provider is a local proxy like gcli2api, make sure the server is running.');
-    console.log('- Or switch back to Codex with: node apps/cli/src/index.mjs provider use openai-codex');
+    console.log('- Or switch back to Codex with: lucy provider use openai-codex');
     process.exit(1);
   }
 }
@@ -2276,6 +2276,6 @@ if (args[0] === 'rtk' && args[1] === 'status') {
 
 printSection('Lucy QA command not recognized', [
   `- input: ${args.join(' ') || 'none'}`,
-  '- Try node apps/cli/src/index.mjs to see the available commands.'
+  '- Try lucy to see the available commands.'
 ]);
 process.exit(1);

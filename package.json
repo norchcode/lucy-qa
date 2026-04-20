@@ -4,12 +4,17 @@
   "version": "0.1.0",
   "description": "Personal agentic AI for QA, Playwright, research, and Obsidian-backed memory",
   "packageManager": "pnpm@10.0.0",
+  "bin": {
+    "lucy": "bin/lucy"
+  },
   "scripts": {
     "dev": "turbo run dev",
     "build": "turbo run build",
     "test": "turbo run test",
     "lint": "turbo run lint",
-    "doctor": "node ./scripts/doctor.mjs"
+    "doctor": "node ./scripts/doctor.mjs",
+    "lucy": "node ./apps/cli/src/index.mjs",
+    "install:lucy": "bash ./scripts/install-lucy.sh"
   },
   "devDependencies": {
     "turbo": "^2.0.0"

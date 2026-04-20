@@ -76,7 +76,7 @@ Preferred sources of truth are:
 This avoids shipping stale Codex model lists as OpenAI updates the recommended lineup.
 
 ## Current CLI examples
-- `node apps/cli/src/index.mjs provider show gcli2api-local --model fast`
-- `node apps/cli/src/index.mjs ask "hello" --provider gcli2api-local --model deep_reasoning`
-- `node apps/cli/src/index.mjs provider models openai-codex`
-- `node apps/cli/src/index.mjs ask "hello" --provider openai-codex --model gpt-5.4-mini`
+- `lucy provider show gcli2api-local --model fast`
+- `lucy ask "hello" --provider gcli2api-local --model deep_reasoning`
+- `lucy provider models openai-codex`
+- `lucy ask "hello" --provider openai-codex --model gpt-5.4-mini`

@@ -3,10 +3,10 @@
 Lucy QA should allow users to switch providers and models even after initial login and default-model setup.
 
 ## Current commands
-- `node apps/cli/src/index.mjs provider active`
-- `node apps/cli/src/index.mjs provider use <name>`
-- `node apps/cli/src/index.mjs provider default-model <name> <model>`
-- `node apps/cli/src/index.mjs ask "..." --provider <name> --model <model>`
+- `lucy provider active`
+- `lucy provider use <name>`
+- `lucy provider default-model <name> <model>`
+- `lucy ask "..." --provider <name> --model <model>`
 
 ## Switching rules
 - Connecting to a provider may set it as the active provider
