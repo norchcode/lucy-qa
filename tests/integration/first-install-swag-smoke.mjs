@@ -15,22 +15,23 @@ const runCli = () => spawnSync(process.execPath, ['apps/cli/src/index.mjs'], {
 try {
   const firstRun = runCli();
   assert.equal(firstRun.status, 0, firstRun.stderr || firstRun.stdout);
-  assert.match(firstRun.stdout, /LUCY QA \/\/ QA COCKPIT/i);
+  assert.match(firstRun.stdout, /^LUCY QA$/im);
   assert.match(firstRun.stdout, /QA assistant ready/i);
   assert.match(firstRun.stdout, /version: 0\.1\.0/i);
   assert.match(firstRun.stdout, /available: plan \| run \| report \| file bugs/i);
+  assert.match(firstRun.stdout, /Startup/i);
   assert.match(firstRun.stdout, /Available actions/i);
-  assert.match(firstRun.stdout, /Integrations/i);
-  assert.match(firstRun.stdout, /Recommended first steps/i);
-  assert.match(firstRun.stdout, /Add Jira or Qase credentials after saving the defaults/i);
+  assert.match(firstRun.stdout, /Current setup/i);
+  assert.match(firstRun.stdout, /Next step/i);
   assert.match(firstRun.stdout, /Setup/i);
-  assert.match(firstRun.stdout, /Lucy QA started setup because this is a new workspace/i);
+  assert.match(firstRun.stdout, /minimum setup it needs/i);
   assert.match(firstRun.stdout, /Lucy QA onboarding/i);
   assert.match(firstRun.stdout, /Which QA\/test management system do you use/i);
 
   const secondRun = runCli();
   assert.equal(secondRun.status, 0, secondRun.stderr || secondRun.stdout);
   assert.doesNotMatch(secondRun.stdout, /LUCY QA \/\/ QA COCKPIT/i);
+  assert.doesNotMatch(secondRun.stdout, /Recommended first steps/i);
   assert.match(secondRun.stdout, /Lucy QA onboarding/i);
 
   console.log('first install swag smoke ok');

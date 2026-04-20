@@ -4,6 +4,7 @@ import { connectProvider, discoverProviderModels, persistDefaultModel } from './
 import { switchProvider, getActiveProvider } from './provider-switch.mjs';
 import { listProviderPresets, buildProviderFromPreset, saveProviderConfigEntry, resolveWritableProviderConfigPath, resolveDefaultProviderConfigPath } from './provider-config.mjs';
 import { authCodexStatus, beginOpenAICodexManualOAuth, completeOpenAICodexManualOAuth, getOpenAICodexManualOAuthStatus } from '../../auth-codex/src/index.mjs';
+import { authAnthropicStatus, beginAnthropicManualOAuth, completeAnthropicManualOAuth, getAnthropicManualOAuthStatus } from '../../auth-anthropic/src/index.mjs';
 import { authGitHubCopilotStatus, resolveGitHubCopilotApiKeyEnv } from '../../auth-github-copilot/src/index.mjs';
 
 export const createHarnessAdapter = () => ({
@@ -28,9 +29,13 @@ export {
   switchProvider,
   getActiveProvider,
   authCodexStatus,
+  authAnthropicStatus,
   authGitHubCopilotStatus,
   resolveGitHubCopilotApiKeyEnv,
   beginOpenAICodexManualOAuth,
+  beginAnthropicManualOAuth,
   completeOpenAICodexManualOAuth,
-  getOpenAICodexManualOAuthStatus
+  completeAnthropicManualOAuth,
+  getOpenAICodexManualOAuthStatus,
+  getAnthropicManualOAuthStatus
 };

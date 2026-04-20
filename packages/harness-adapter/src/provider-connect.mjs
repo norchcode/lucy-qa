@@ -3,6 +3,7 @@ import { markProviderConnected, setDiscoveredModels, setDefaultModel, getProvide
 import { PROVIDER_TYPES } from '../../shared-types/src/provider-schema.mjs';
 import { fetchOpenAICompatibleModels } from '../../provider-openai-compatible/src/models.mjs';
 import { fetchCodexModels } from '../../auth-codex/src/models.mjs';
+import { fetchAnthropicModels } from '../../auth-anthropic/src/models.mjs';
 
 const discoverModelsForProvider = async (provider) => {
   switch (provider.type) {
@@ -10,6 +11,8 @@ const discoverModelsForProvider = async (provider) => {
       return await fetchOpenAICompatibleModels(provider);
     case PROVIDER_TYPES.NATIVE_CODEX_OAUTH:
       return await fetchCodexModels(provider);
+    case PROVIDER_TYPES.NATIVE_ANTHROPIC:
+      return await fetchAnthropicModels(provider);
     default:
       throw new Error(`Unsupported provider type: ${provider.type}`);
   }

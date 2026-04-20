@@ -15,11 +15,15 @@ import {
   switchProvider,
   getActiveProvider,
   authCodexStatus,
+  authAnthropicStatus,
   authGitHubCopilotStatus,
   resolveGitHubCopilotApiKeyEnv,
   beginOpenAICodexManualOAuth,
+  beginAnthropicManualOAuth,
   completeOpenAICodexManualOAuth,
-  getOpenAICodexManualOAuthStatus
+  completeAnthropicManualOAuth,
+  getOpenAICodexManualOAuthStatus,
+  getAnthropicManualOAuthStatus
 } from '../../../packages/harness-adapter/src/index.mjs';
 import { runAskCommand } from './ask.mjs';
 import { runDocsCommand } from './docs.mjs';
@@ -160,7 +164,7 @@ const printFirstRunBanner = () => {
     '███████╗╚██████╔╝╚██████╗   ██║       ╚██████╔╝██║  ██║',
     '╚══════╝ ╚═════╝  ╚═════╝   ╚═╝        ╚══▀▀═╝ ╚═╝  ╚═╝'
   ];
-  console.log(colorTitle('LUCY QA // QA COCKPIT'));
+  console.log(colorTitle('LUCY QA'));
   for (const line of lines) {
     console.log(colorAscii(line));
   }
@@ -179,14 +183,49 @@ const writeFirstRunState = (vaultPath = null) => {
   fs.writeFileSync(filePath, JSON.stringify({ shown_at: new Date().toISOString() }, null, 2));
 };
 
+const formatSetupValue = (value, emptyText = 'not configured yet') => value ?? emptyText;
+
+const buildSetupNextStepLines = (onboarding) => {
+  const profile = onboarding.profile ?? {};
+  const questions = onboarding.questions ?? [];
+
+  if (profile.qa_test_management && profile.qa_project && !profile.issue_tracker) {
+    return [
+      `- saved so far: ${profile.qa_test_management} / ${profile.qa_project}`,
+      '- next: add the issue tracker your team uses',
+      `- next question: ${questions[0] ?? 'not available'}`
+    ];
+  }
+
+  if (profile.issue_tracker && profile.issue_tracker !== 'none' && !profile.issue_project) {
+    return [
+      `- saved so far: issue tracker is ${profile.issue_tracker}`,
+      '- next: add the issue tracker project or team key',
+      `- next question: ${questions[0] ?? 'not available'}`
+    ];
+  }
+
+  if (profile.qa_test_management && profile.issue_tracker) {
+    return [
+      '- core setup is saved',
+      '- next: add Jira or Qase credentials when you are ready to sync outward'
+    ];
+  }
+
+  return [
+    '- start by telling Lucy QA which test management system your team uses',
+    ...(questions[0] ? [`- next question: ${questions[0]}`] : [])
+  ];
+};
+
 const printFirstRunOnboarding = async ({ vaultPath = null, startupState = null } = {}) => {
   const onboarding = await runQaOnboardingCommand({ vaultPath });
   printFirstRunBanner();
   console.log('');
-  printPanel('Boot sequence', [
+  printPanel('Startup', [
     `- vault_path: ${resolveVaultPath(vaultPath)}`,
     `- startup_state: ${startupState?.has_resumable_state ? 'resume-available' : 'fresh-start'}`,
-    '- next step: answer one onboarding prompt at a time; Lucy QA will keep asking only for the missing pieces'
+    '- answer one setup prompt at a time; Lucy QA will keep asking only for what is still missing'
   ]);
   console.log('');
   printPanel('Available actions', [
@@ -196,27 +235,24 @@ const printFirstRunOnboarding = async ({ vaultPath = null, startupState = null }
     '- qa bugs -> draft bug reports from failed runs'
   ]);
   console.log('');
-  printPanel('Integrations', [
-    `- qa_test_management: ${onboarding.profile?.qa_test_management ?? 'not configured yet'}`,
-    `- issue_tracker: ${onboarding.profile?.issue_tracker ?? 'not configured yet'}`,
+  printPanel('Current setup', [
+    `- qa_test_management: ${formatSetupValue(onboarding.profile?.qa_test_management)}`,
+    `- qa_project: ${formatSetupValue(onboarding.profile?.qa_project)}`,
+    `- issue_tracker: ${formatSetupValue(onboarding.profile?.issue_tracker)}`,
+    `- issue_project: ${formatSetupValue(onboarding.profile?.issue_project)}`,
     `- jira_ready: ${onboarding.integrations?.readiness?.jira?.ready ? 'yes' : 'no'}`,
     `- qase_ready: ${onboarding.integrations?.readiness?.qase?.ready ? 'yes' : 'no'}`
   ]);
   console.log('');
-  printPanel('Recommended first steps', [
-    '- 1. Tell Lucy QA which test management system your team uses',
-    '- 2. Add your issue tracker project or team key',
-    '- 3. Add Jira or Qase credentials after saving the defaults'
-  ]);
+  printPanel('Next step', buildSetupNextStepLines(onboarding));
   console.log('');
   printPanel('Setup', [
-    '- Lucy QA started setup because this is a new workspace.',
-    '- answer the questions below in stages if needed; Lucy QA will keep track of what is still missing.'
+    '- this is a new workspace, so Lucy QA is collecting the minimum setup it needs.',
+    '- you can answer in stages; partial answers are saved and reused on the next run.'
   ]);
   console.log('');
   printSection('Lucy QA onboarding', [
     '- status: setup needed',
-    '- Lucy QA opened onboarding because this looks like a first run.',
     '- Save your stack with flags or a short answer such as:',
     '- lucy qa onboarding "we use qase project WEB and jira project QA"',
     '- lucy qa onboarding --qa-test-management <name> --qa-project <code> --issue-tracker <name> --issue-project <key-or-team>',
@@ -274,18 +310,26 @@ const printOnboardingPrompt = async ({ vaultPath = process.env.LUCY_QA_VAULT_PAT
   }
 
   printSection(title, [
+    `- qa_test_management: ${formatSetupValue(onboarding.profile.qa_test_management)}`,
+    `- qa_project: ${formatSetupValue(onboarding.profile.qa_project)}`,
+    `- issue_tracker: ${formatSetupValue(onboarding.profile.issue_tracker)}`,
+    `- issue_project: ${formatSetupValue(onboarding.profile.issue_project)}`,
     '- status: setup recommended',
-    '- Before deep QA work, please tell Lucy QA which systems your team uses:',
-    '- 1. QA/test management: Qase, TestRail, Xray, Zephyr, or none',
-    '- 2. QA/test management project/code if relevant',
-    '- 3. Task/issue tracker: Jira, Linear, GitHub Issues, GitLab Issues, Azure DevOps, YouTrack, or none',
-    '- 4. Optional issue-tracker project/team/key used there',
+    '- Lucy QA will keep asking only for the missing setup details.',
+    `- next: ${onboarding.questions?.[0] ?? 'review the saved setup and add credentials when ready'}`,
     '- Save it with flags or a short answer such as:',
     '- lucy qa onboarding "we use qase project WEB and jira project QA"',
     '- lucy qa onboarding --qa-test-management <name> --qa-project <code> --issue-tracker <name> --issue-project <key-or-team>',
     '- Then add credentials with:',
     '- lucy qa onboarding --jira-base-url <url> --jira-email <email> --jira-api-token <token> --qase-api-token <token> --test-connections'
   ]);
+  if (onboarding.questions?.length) {
+    console.log('');
+    console.log('Questions');
+    for (const question of onboarding.questions) {
+      console.log(`- ${question}`);
+    }
+  }
 };
 
 const printAuthStatus = (status) => {
@@ -315,10 +359,25 @@ const printGitHubCopilotAuthStatus = (status) => {
   ]);
 };
 
+const printAnthropicAuthStatus = (status) => {
+  printSection('Anthropic auth status', [
+    `- provider: ${status.provider}`,
+    `- auth_mode: ${status.auth_mode ?? 'unknown'}`,
+    `- token_store: ${status.token_store_path}`,
+    `- configured_api_key_env: ${status.configured_api_key_env ?? 'not set'}`,
+    `- configured_api_key_present: ${status.has_configured_api_key ? 'yes' : 'no'}`,
+    `- stored_api_key_present: ${status.has_store_api_key ? 'yes' : 'no'}`,
+    `- access_token_present: ${status.has_access_token ? 'yes' : 'no'}`,
+    `- api_key_created_at: ${status.api_key_created_at ?? 'not available'}`,
+    `- oauth_expires_at: ${status.expires_at ?? 'not available'}`,
+    `- scope: ${status.scope ?? 'not available'}`
+  ]);
+};
+
 const printAuthPending = (status) => {
   if (!status.pending) {
     printSection('Manual OAuth pending state', [
-      '- provider: openai-codex',
+      `- provider: ${status.provider}`,
       '- pending: no'
     ]);
     return;
@@ -335,7 +394,7 @@ const printAuthPending = (status) => {
 };
 
 const printAuthLoginManual = (result) => {
-  printSection('Manual Codex OAuth login started', [
+  printSection('Manual OAuth login started', [
     `- provider: ${result.provider}`,
     `- method: ${result.method}`,
     `- redirect_uri: ${result.redirect_uri}`,
@@ -375,16 +434,18 @@ const printGitHubCopilotAuthReady = (result) => {
 };
 
 const printAuthComplete = (result) => {
-  printSection('Manual Codex OAuth completed', [
+  printSection('Manual OAuth completed', [
     `- provider: ${result.provider}`,
     `- method: ${result.method}`,
     `- token_store: ${result.token_store}`,
     `- account_id: ${result.account_id ?? 'not available'}`,
-    `- scopes: ${Array.isArray(result.scopes) ? result.scopes.join(', ') : 'not available'}`,
+    `- api_key: ${result.api_key ? 'created' : 'not created'}`,
+    `- scopes: ${Array.isArray(result.scopes) ? result.scopes.join(', ') : result.scopes ?? 'not available'}`,
     '',
     'Important:',
-    '- This login is enough for codex-cli transport.',
-    '- It may still not include api.responses.write for direct Responses API access.'
+    ...(result.provider === 'anthropic'
+      ? ['- Lucy QA created a real Anthropic API key from the OAuth flow and saved it in the token store.']
+      : ['- This login is enough for codex-cli transport.', '- It may still not include api.responses.write for direct Responses API access.'])
   ]);
 };
 
@@ -400,6 +461,9 @@ const printProviderList = (providers, activeProvider) => {
     console.log(`   base_model: ${provider.model}`);
     if (provider.base_url) {
       console.log(`   base_url: ${provider.base_url}`);
+    }
+    if (provider.api_base_url) {
+      console.log(`   api_base_url: ${provider.api_base_url}`);
     }
     console.log(`   available_models: ${provider.available_models.length}`);
     if (Object.keys(provider.model_aliases ?? {}).length) {
@@ -483,7 +547,7 @@ const printProviderPresets = (presets, mode = 'detailed') => {
     console.log(`- key: ${item.key}`);
     console.log(`- label: ${item.label}`);
     console.log(`- description: ${item.description}`);
-    console.log(`- default_base_url: ${item.defaults.base_url}`);
+    console.log(`- default_base_url: ${item.defaults.base_url ?? item.defaults.api_base_url ?? 'not set'}`);
     console.log(`- default_model: ${item.defaults.model}`);
   }
 };
@@ -494,6 +558,7 @@ const printProviderSetup = (result, mode = 'detailed') => {
     `- provider_name: ${result.provider_name}`,
     `- type: ${result.provider.type}`,
     `- base_url: ${result.provider.base_url ?? 'not set'}`,
+    `- api_base_url: ${result.provider.api_base_url ?? 'not set'}`,
     `- model: ${result.provider.model}`,
     `- api_key_env: ${result.provider.api_key_env ?? 'not set'}`,
     `- default_provider: ${result.default_provider}`,
@@ -1362,6 +1427,14 @@ const inferConversationalProviderSetup = (inputText = '') => {
     };
   }
 
+  if (/\banthropic\b|\bclaude\b/.test(text)) {
+    return {
+      preset: 'anthropic',
+      providerName: 'anthropic',
+      setDefault
+    };
+  }
+
   if (/\bglm\b|zhipu|bigmodel/.test(text)) {
     return {
       preset: 'glm',
@@ -1408,17 +1481,18 @@ if (args.length === 0) {
   console.log('');
   console.log('Lucy QA CLI');
   console.log('Available commands:');
-  console.log('- auth status --provider <openai-codex|github-copilot>');
+  console.log('- auth status --provider <openai-codex|anthropic|github-copilot>');
   console.log('- auth login --provider openai-codex [--method manual-oauth|device|browser]');
+  console.log('- auth login --provider anthropic [--method manual-oauth]');
   console.log('- auth login --provider github-copilot [--api-key-env <ENV>] [--base-url <url>] [--model <model>] [--label <text>] [--set-default]');
-  console.log('- auth complete --provider openai-codex "<callback-url>"');
-  console.log('- auth pending --provider openai-codex');
+  console.log('- auth complete --provider <openai-codex|anthropic> "<callback-url>"');
+  console.log('- auth pending --provider <openai-codex|anthropic>');
   console.log('- provider list');
   console.log('- provider show <name> [--model <model-or-alias>] [--task <task>]');
   console.log('- provider active');
   console.log('- provider presets [--plain|--detailed]');
   console.log('- provider connect <name>');
-  console.log('- provider setup <name> --preset <openai-compatible|cliproxyapi|adacode|github-copilot|glm|minimax> [--base-url <url>] [--api-key-env <ENV>] [--model <model>] [--label <text>] [--set-default] [--plain|--detailed]');
+  console.log('- provider setup <name> --preset <openai-compatible|cliproxyapi|adacode|anthropic|github-copilot|glm|minimax> [--base-url <url>] [--api-key-env <ENV>] [--model <model>] [--label <text>] [--set-default] [--plain|--detailed]');
   console.log('- provider setup "use github copilot and make it default" [--plain|--detailed]');
   console.log('- provider use <name>');
   console.log('- provider models <name>');
@@ -1464,6 +1538,12 @@ if (args[0] === 'auth' && args[1] === 'status') {
     await printOnboardingPrompt({ title: 'Lucy QA onboarding after login check' });
     process.exit(0);
   }
+  if (providerName === 'anthropic') {
+    printAnthropicAuthStatus(authAnthropicStatus(getResolvedProviderConfig(providerName)));
+    console.log('');
+    await printOnboardingPrompt({ title: 'Lucy QA onboarding after login check' });
+    process.exit(0);
+  }
   if (providerName === 'github-copilot') {
     printGitHubCopilotAuthStatus(authGitHubCopilotStatus(getResolvedProviderConfigOrNull(providerName) ?? {}));
     console.log('');
@@ -1475,6 +1555,10 @@ if (args[0] === 'auth' && args[1] === 'status') {
 
 if (args[0] === 'auth' && args[1] === 'pending') {
   const providerName = readFlag('--provider') ?? 'openai-codex';
+  if (providerName === 'anthropic') {
+    printAuthPending(getAnthropicManualOAuthStatus({ providerName }));
+    process.exit(0);
+  }
   printAuthPending(getOpenAICodexManualOAuthStatus({ providerName }));
   process.exit(0);
 }
@@ -1513,6 +1597,14 @@ if (args[0] === 'auth' && args[1] === 'login') {
     throw new Error(`Unsupported auth login method: ${method}`);
   }
 
+  if (providerName === 'anthropic') {
+    if (method !== 'manual-oauth') {
+      throw new Error(`Unsupported auth login method for anthropic: ${method}`);
+    }
+    printAuthLoginManual(beginAnthropicManualOAuth({ providerName, providerConfig }));
+    process.exit(0);
+  }
+
   if (providerName === 'github-copilot') {
     if (method !== 'env') {
       throw new Error(`Unsupported auth login method for github-copilot: ${method}`);
@@ -1544,7 +1636,10 @@ if (args[0] === 'auth' && args[1] === 'login') {
 if (args[0] === 'auth' && args[1] === 'complete') {
   const providerName = readFlag('--provider') ?? 'openai-codex';
   const callbackUrl = positionalAfter(2).join(' ').trim();
-  printAuthComplete(await completeOpenAICodexManualOAuth({ providerName, callbackUrl }));
+  const result = providerName === 'anthropic'
+    ? await completeAnthropicManualOAuth({ providerName, callbackUrl })
+    : await completeOpenAICodexManualOAuth({ providerName, callbackUrl });
+  printAuthComplete(result);
   console.log('');
   await printOnboardingPrompt({ title: 'Lucy QA onboarding after provider login' });
   process.exit(0);

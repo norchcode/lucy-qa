@@ -15,8 +15,9 @@ try {
 
   assert.equal(result.status, 0, result.stderr || result.stdout);
   assert.match(result.stdout, /\x1b\[[0-9;]*m/);
-  assert.match(result.stdout, /LUCY QA \/\/ QA COCKPIT/i);
+  assert.match(result.stdout, /LUCY QA/i);
   assert.match(result.stdout, /Available actions/i);
+  assert.doesNotMatch(result.stdout, /QA COCKPIT/i);
 
   console.log('first install ansi smoke ok');
 } finally {

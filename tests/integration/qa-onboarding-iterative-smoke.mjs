@@ -34,7 +34,11 @@ try {
 
   assert.equal(startup.status, 0, startup.stderr || startup.stdout);
   assert.match(startup.stdout, /Lucy QA onboarding/i);
+  assert.match(startup.stdout, /qa_test_management: qase/i);
+  assert.match(startup.stdout, /qa_project: WEB/i);
   assert.match(startup.stdout, /issue_tracker: not configured yet/i);
+  assert.match(startup.stdout, /Next step/i);
+  assert.match(startup.stdout, /saved so far: qase \/ WEB/i);
   assert.match(startup.stdout, /Questions/i);
   assert.match(startup.stdout, /Which task management \/ issue tracker do you use/i);
   assert.doesNotMatch(startup.stdout, /Which QA\/test management system do you use/i);

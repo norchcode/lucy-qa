@@ -75,6 +75,40 @@ const baseOpenAICompatiblePreset = ({
   notes
 });
 
+const baseAnthropicPreset = ({
+  label,
+  model,
+  availableModels = [],
+  notes = [],
+  modelAliases = {},
+  taskModelPreferences = {}
+}) => ({
+  type: 'native-anthropic',
+  enabled: true,
+  label,
+  oauth_provider: 'anthropic',
+  oauth_client_id: '9d1c250a-e61b-44d9-88ed-5944d1962f5e',
+  oauth_redirect_uri: 'https://console.anthropic.com/oauth/code/callback',
+  authorization_endpoint: 'https://console.anthropic.com/oauth/authorize',
+  token_endpoint: 'https://console.anthropic.com/v1/oauth/token',
+  oauth_scope: 'org:create_api_key user:profile user:inference',
+  api_key_creation_endpoint: 'https://api.anthropic.com/api/oauth/claude_cli/create_api_key',
+  api_base_url: 'https://api.anthropic.com',
+  api_version: '2023-06-01',
+  token_store: '~/.claude/oauth-store.json',
+  api_key: null,
+  api_key_env: null,
+  model,
+  default_model: model,
+  timeout_ms: 120000,
+  max_tokens: 4096,
+  available_models: availableModels.length ? availableModels : [model].filter(Boolean),
+  model_aliases: modelAliases,
+  task_model_preferences: taskModelPreferences,
+  default_headers: {},
+  notes
+});
+
 const PRESETS = {
   'openai-compatible': {
     key: 'openai-compatible',
@@ -150,6 +184,30 @@ const PRESETS = {
         qa: ['balanced', 'fast'],
         research: ['reasoning', 'balanced'],
         coding: ['balanced', 'reasoning'],
+        uiux: ['balanced', 'fast']
+      }
+    })
+  },
+  anthropic: {
+    key: 'anthropic',
+    label: 'Anthropic Claude',
+    description: 'Native Anthropic Claude provider using Console OAuth to mint a real API key for the Messages API.',
+    defaults: () => baseAnthropicPreset({
+      label: 'Anthropic Claude',
+      model: 'claude-3-7-sonnet-latest',
+      availableModels: ['claude-3-7-sonnet-latest', 'claude-3-5-haiku-latest'],
+      notes: [
+        'Run lucy auth login --provider anthropic to start the Anthropic Console OAuth flow.',
+        'Lucy QA stores the generated API key in ~/.claude/oauth-store.json unless you override token_store.'
+      ],
+      modelAliases: {
+        balanced: 'claude-3-7-sonnet-latest',
+        fast: 'claude-3-5-haiku-latest'
+      },
+      taskModelPreferences: {
+        qa: ['balanced', 'fast'],
+        research: ['balanced'],
+        coding: ['balanced', 'fast'],
         uiux: ['balanced', 'fast']
       }
     })
@@ -264,7 +322,7 @@ export const buildProviderFromPreset = ({ preset, providerName, baseUrl = null, 
     config: {
       ...config,
       ...(label ? { label } : {}),
-      ...(baseUrl ? { base_url: baseUrl.replace(/\/$/, '') } : {}),
+      ...(baseUrl ? (config.base_url ? { base_url: baseUrl.replace(/\/$/, '') } : { api_base_url: baseUrl.replace(/\/$/, '') }) : {}),
       model: resolvedModel,
       default_model: resolvedModel,
       available_models: [...new Set([...(config.available_models ?? []), resolvedModel].filter(Boolean))],

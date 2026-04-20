@@ -3,6 +3,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { PROVIDER_TYPES, REQUIRED_PROVIDER_FIELDS } from '../../shared-types/src/provider-schema.mjs';
 import { normalizeCodexConfig } from '../../auth-codex/src/normalize.mjs';
+import { normalizeAnthropicConfig } from '../../auth-anthropic/src/normalize.mjs';
 import { normalizeOpenAICompatibleConfig } from '../../provider-openai-compatible/src/normalize.mjs';
 import { loadProviderState } from './provider-state.mjs';
 import { resolveDefaultProviderConfigPath } from './provider-config.mjs';
@@ -15,6 +16,8 @@ const normalizeByType = (config) => {
   switch (config.type) {
     case PROVIDER_TYPES.NATIVE_CODEX_OAUTH:
       return normalizeCodexConfig(config);
+    case PROVIDER_TYPES.NATIVE_ANTHROPIC:
+      return normalizeAnthropicConfig(config);
     case PROVIDER_TYPES.OPENAI_COMPATIBLE:
       return normalizeOpenAICompatibleConfig(config);
     default:

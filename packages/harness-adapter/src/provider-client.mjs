@@ -1,4 +1,5 @@
 import { createCodexClient } from '../../auth-codex/src/client.mjs';
+import { createAnthropicClient } from '../../auth-anthropic/src/client.mjs';
 import { createOpenAICompatibleProvider } from '../../provider-openai-compatible/src/index.mjs';
 import { createOpenAICompatibleClient } from '../../provider-openai-compatible/src/client.mjs';
 import { PROVIDER_TYPES } from '../../shared-types/src/provider-schema.mjs';
@@ -17,6 +18,13 @@ export const createProviderClient = ({ providerName, model = null, taskType = nu
         provider,
         model_selection,
         client: createCodexClient(provider)
+      };
+    case PROVIDER_TYPES.NATIVE_ANTHROPIC:
+      return {
+        name,
+        provider,
+        model_selection,
+        client: createAnthropicClient(provider)
       };
     case PROVIDER_TYPES.OPENAI_COMPATIBLE:
       return {
