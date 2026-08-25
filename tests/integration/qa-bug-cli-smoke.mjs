@@ -8,7 +8,7 @@ const result = spawnSync(process.execPath, [
   'Login fails with valid credentials on staging after submit.',
   '--plain'
 ], {
-  cwd: '/root/lucy-qa',
+  cwd: process.cwd(),
   encoding: 'utf8'
 });
 

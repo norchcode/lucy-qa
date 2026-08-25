@@ -93,7 +93,7 @@ try {
   }, null, 2));
 
   const result = spawnSync(process.execPath, ['apps/cli/src/index.mjs', 'qa', 'bugs', '--from-run', runDir, '--plain'], {
-    cwd: '/root/lucy-qa',
+    cwd: process.cwd(),
     encoding: 'utf8',
     env: {
       ...process.env,

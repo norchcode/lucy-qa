@@ -17,7 +17,7 @@ try {
     '--vault',
     tempRoot,
     '--plain'
-  ], { cwd: '/root/lucy-qa', encoding: 'utf8' });
+  ], { cwd: process.cwd(), encoding: 'utf8' });
 
   assert.equal(save.status, 0, save.stderr || save.stdout);
 
@@ -28,7 +28,7 @@ try {
     '--vault',
     tempRoot,
     '--plain'
-  ], { cwd: '/root/lucy-qa', encoding: 'utf8' });
+  ], { cwd: process.cwd(), encoding: 'utf8' });
 
   assert.equal(journal.status, 0, journal.stderr || journal.stdout);
   assert.match(journal.stdout, /Session journal/i);

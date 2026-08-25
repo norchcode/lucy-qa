@@ -14,7 +14,7 @@ try {
     '--provider',
     'openai-codex'
   ], {
-    cwd: '/root/lucy-qa',
+    cwd: process.cwd(),
     env: { ...process.env, LUCY_QA_VAULT_PATH: tempRoot },
     encoding: 'utf8'
   });
@@ -22,8 +22,8 @@ try {
   assert.equal(result.status, 0, result.stderr || result.stdout);
   assert.match(result.stdout, /Codex auth status/i);
   assert.match(result.stdout, /Lucy QA onboarding after login check/i);
-  assert.match(result.stdout, /QA\/test management: Qase, TestRail, Xray, Zephyr, or none/i);
-  assert.match(result.stdout, /Task\/issue tracker: Jira, Linear, GitHub Issues/i);
+  assert.match(result.stdout, /Which QA\/test management system do you use\? Example: Qase, TestRail, Xray, Zephyr, or none/i);
+  assert.match(result.stdout, /Which task management \/ issue tracker do you use\? Example: Jira, Linear, GitHub Issues/i);
 
   console.log('auth onboarding prompt smoke ok');
 } finally {

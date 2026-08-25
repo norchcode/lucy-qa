@@ -24,7 +24,7 @@ process.stdout.write(JSON.stringify({
 `);
 
   const result = spawnSync(process.execPath, ['apps/cli/src/index.mjs', 'qa', 'run', 'tests/e2e/demo.spec.js', '--artifacts-root', path.join(tempRoot, 'artifacts'), '--plain'], {
-    cwd: '/root/lucy-qa',
+    cwd: process.cwd(),
     env: {
       ...process.env,
       LUCY_QA_RUNNER_COMMAND: process.execPath,

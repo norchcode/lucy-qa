@@ -44,13 +44,13 @@ try {
 
   for (let i = 0; i < 5; i += 1) {
     const result = await runNode(['apps/cli/src/index.mjs', 'qa', 'agent', 'review latest run', '--vault', vaultPath, '--plain'], {
-      cwd: '/root/lucy-qa', encoding: 'utf8'
+      cwd: process.cwd(), encoding: 'utf8'
     });
     assert.equal(result.status, 0, result.stderr || result.stdout);
   }
 
   const learning = await runNode(['apps/cli/src/index.mjs', 'qa', 'learning', '--vault', vaultPath, '--plain'], {
-    cwd: '/root/lucy-qa', encoding: 'utf8'
+    cwd: process.cwd(), encoding: 'utf8'
   });
   assert.equal(learning.status, 0, learning.stderr || learning.stdout);
   assert.match(learning.stdout, /event_count: 5/i);

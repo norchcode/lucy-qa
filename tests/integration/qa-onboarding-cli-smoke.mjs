@@ -14,7 +14,7 @@ try {
     '--vault',
     tempRoot,
     '--plain'
-  ], { cwd: '/root/lucy-qa', encoding: 'utf8' });
+  ], { cwd: process.cwd(), encoding: 'utf8' });
 
   assert.equal(show.status, 0, show.stderr || show.stdout);
   assert.match(show.stdout, /configured: no/i);
@@ -39,7 +39,7 @@ try {
     '--vault',
     tempRoot,
     '--plain'
-  ], { cwd: '/root/lucy-qa', encoding: 'utf8' });
+  ], { cwd: process.cwd(), encoding: 'utf8' });
 
   assert.equal(save.status, 0, save.stderr || save.stdout);
   assert.match(save.stdout, /configured: yes/i);
@@ -49,7 +49,7 @@ try {
   assert.match(save.stdout, /issue_project: QA/i);
 
   const startup = spawnSync(process.execPath, ['apps/cli/src/index.mjs'], {
-    cwd: '/root/lucy-qa',
+    cwd: process.cwd(),
     env: { ...process.env, LUCY_QA_VAULT_PATH: tempRoot },
     encoding: 'utf8'
   });

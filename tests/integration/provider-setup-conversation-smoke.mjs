@@ -21,7 +21,7 @@ try {
     'use github copilot and make it default',
     '--plain'
   ], {
-    cwd: '/root/lucy-qa',
+    cwd: process.cwd(),
     env,
     encoding: 'utf8'
   });

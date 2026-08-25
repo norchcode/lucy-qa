@@ -17,7 +17,7 @@ try {
     '--vault',
     tempRoot,
     '--plain'
-  ], { cwd: '/root/lucy-qa', encoding: 'utf8' });
+  ], { cwd: process.cwd(), encoding: 'utf8' });
 
   assert.equal(save.status, 0, save.stderr || save.stdout);
   assert.match(save.stdout, /Session state saved/i);
@@ -29,7 +29,7 @@ try {
     '--vault',
     tempRoot,
     '--plain'
-  ], { cwd: '/root/lucy-qa', encoding: 'utf8' });
+  ], { cwd: process.cwd(), encoding: 'utf8' });
 
   assert.equal(show.status, 0, show.stderr || show.stdout);
   assert.match(show.stdout, /Resume context/i);

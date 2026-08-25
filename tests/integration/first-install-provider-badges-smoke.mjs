@@ -11,7 +11,7 @@ fs.writeFileSync(path.join(lucyHome, 'preferences.json'), JSON.stringify({ activ
 
 try {
   const result = spawnSync(process.execPath, ['apps/cli/src/index.mjs'], {
-    cwd: '/root/lucy-qa',
+    cwd: process.cwd(),
     env: { ...process.env, HOME: tempRoot, LUCY_QA_VAULT_PATH: tempRoot },
     encoding: 'utf8'
   });

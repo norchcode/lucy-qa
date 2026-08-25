@@ -117,7 +117,7 @@ try {
   // qa exec with RTK disabled — should show rtk: not applied
   const execResult = await runNode([
     'apps/cli/src/index.mjs', 'qa', 'exec', 'echo hello world', '--plain'
-  ], { cwd: '/root/lucy-qa', env: baseEnv, encoding: 'utf8' });
+  ], { cwd: process.cwd(), env: baseEnv, encoding: 'utf8' });
 
   assert.equal(execResult.status, 0, execResult.stderr || execResult.stdout);
   assert.match(execResult.stdout, /status: passed/i);
@@ -127,7 +127,7 @@ try {
   // rtk status command
   const rtkStatusResult = await runNode([
     'apps/cli/src/index.mjs', 'rtk', 'status'
-  ], { cwd: '/root/lucy-qa', env: baseEnv, encoding: 'utf8' });
+  ], { cwd: process.cwd(), env: baseEnv, encoding: 'utf8' });
   assert.equal(rtkStatusResult.status, 0, rtkStatusResult.stderr || rtkStatusResult.stdout);
   assert.match(rtkStatusResult.stdout, /RTK status/i);
   assert.match(rtkStatusResult.stdout, /enabled/i);
@@ -135,7 +135,7 @@ try {
   // doctor script runs without crashing
   const doctorResult = await runNode([
     'scripts/doctor.mjs', '--plain'
-  ], { cwd: '/root/lucy-qa', env: baseEnv, encoding: 'utf8' });
+  ], { cwd: process.cwd(), env: baseEnv, encoding: 'utf8' });
   // doctor may exit 1 if some optional deps missing, but should not throw
   assert.match(doctorResult.stdout, /rtk/i, 'doctor should mention RTK');
   assert.match(doctorResult.stdout, /doctor:/i);

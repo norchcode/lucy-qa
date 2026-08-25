@@ -63,7 +63,7 @@ try {
     '--vault',
     vaultPath,
     '--plain'
-  ], { cwd: '/root/lucy-qa', encoding: 'utf8' });
+  ], { cwd: process.cwd(), encoding: 'utf8' });
   assert.equal(onboarding.status, 0, onboarding.stderr || onboarding.stdout);
 
   const runDir = path.join(tempRoot, 'artifacts', 'playwright', 'runs', 'demo-run');
@@ -100,7 +100,7 @@ try {
     vaultPath,
     '--plain'
   ], {
-    cwd: '/root/lucy-qa',
+    cwd: process.cwd(),
     encoding: 'utf8',
     env: {
       ...process.env,

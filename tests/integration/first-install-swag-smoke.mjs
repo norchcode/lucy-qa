@@ -7,7 +7,7 @@ import { spawnSync } from 'node:child_process';
 const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'lucy-qa-first-install-'));
 
 const runCli = () => spawnSync(process.execPath, ['apps/cli/src/index.mjs'], {
-  cwd: '/root/lucy-qa',
+  cwd: process.cwd(),
   env: { ...process.env, HOME: tempRoot, LUCY_QA_VAULT_PATH: tempRoot },
   encoding: 'utf8'
 });

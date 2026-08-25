@@ -10,12 +10,12 @@ const knowledgeDir = path.join(vaultPath, 'qa-knowledge');
 fs.mkdirSync(knowledgeDir, { recursive: true });
 
 try {
-  const knowledgePath = path.join(knowledgeDir, 'lucy-qa-example-test.json');
+  const knowledgePath = path.join(knowledgeDir, `${path.basename(process.cwd())}-example-test.json`);
   fs.writeFileSync(knowledgePath, JSON.stringify({
-    project_key: 'lucy-qa-example-test',
+    project_key: `${path.basename(process.cwd())}-example-test`,
     created_at: '2026-04-05T00:00:00.000Z',
     updated_at: '2026-04-05T00:00:00.000Z',
-    identifiers: { cwd: '/root/lucy-qa', hostnames: ['example.test'] },
+    identifiers: { cwd: process.cwd(), hostnames: ['example.test'] },
     stats: { runs_total: 1, passed_runs: 0, failed_runs: 1 },
     learned_frameworks: [],
     deployment_hints: [],
@@ -47,7 +47,7 @@ try {
   }, null, 2));
 
   const listBefore = spawnSync(process.execPath, ['apps/cli/src/index.mjs', 'qa', 'defects', 'list', '--target-url', 'https://example.test/login', '--vault', vaultPath, '--plain'], {
-    cwd: '/root/lucy-qa',
+    cwd: process.cwd(),
     encoding: 'utf8'
   });
   assert.equal(listBefore.status, 0, listBefore.stderr || listBefore.stdout);
@@ -65,7 +65,7 @@ try {
     '--vault', vaultPath,
     '--plain'
   ], {
-    cwd: '/root/lucy-qa',
+    cwd: process.cwd(),
     encoding: 'utf8'
   });
   assert.equal(link.status, 0, link.stderr || link.stdout);
@@ -80,14 +80,14 @@ try {
     '--vault', vaultPath,
     '--plain'
   ], {
-    cwd: '/root/lucy-qa',
+    cwd: process.cwd(),
     encoding: 'utf8'
   });
   assert.equal(update.status, 0, update.stderr || update.stdout);
   assert.match(update.stdout, /tracker_status: In Progress/i);
 
   const listAfter = spawnSync(process.execPath, ['apps/cli/src/index.mjs', 'qa', 'defects', 'list', '--target-url', 'https://example.test/login', '--vault', vaultPath, '--plain'], {
-    cwd: '/root/lucy-qa',
+    cwd: process.cwd(),
     encoding: 'utf8'
   });
   assert.equal(listAfter.status, 0, listAfter.stderr || listAfter.stdout);

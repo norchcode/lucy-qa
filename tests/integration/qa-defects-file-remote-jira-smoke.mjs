@@ -61,15 +61,15 @@ try {
     '--vault',
     vaultPath,
     '--plain'
-  ], { cwd: '/root/lucy-qa', encoding: 'utf8' });
+  ], { cwd: process.cwd(), encoding: 'utf8' });
   assert.equal(onboarding.status, 0, onboarding.stderr || onboarding.stdout);
 
-  const knowledgePath = path.join(knowledgeDir, 'lucy-qa-example-test.json');
+  const knowledgePath = path.join(knowledgeDir, `${path.basename(process.cwd())}-example-test.json`);
   fs.writeFileSync(knowledgePath, JSON.stringify({
-    project_key: 'lucy-qa-example-test',
+    project_key: `${path.basename(process.cwd())}-example-test`,
     created_at: '2026-04-05T00:00:00.000Z',
     updated_at: '2026-04-05T00:00:00.000Z',
-    identifiers: { cwd: '/root/lucy-qa', hostnames: ['example.test'] },
+    identifiers: { cwd: process.cwd(), hostnames: ['example.test'] },
     stats: { runs_total: 1, passed_runs: 0, failed_runs: 1 },
     learned_frameworks: [],
     deployment_hints: [],
@@ -112,7 +112,7 @@ try {
     vaultPath,
     '--plain'
   ], {
-    cwd: '/root/lucy-qa',
+    cwd: process.cwd(),
     encoding: 'utf8',
     env: {
       ...process.env,

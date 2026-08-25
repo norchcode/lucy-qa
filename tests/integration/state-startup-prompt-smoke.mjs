@@ -17,14 +17,14 @@ try {
     '--vault',
     tempRoot,
     '--plain'
-  ], { cwd: '/root/lucy-qa', encoding: 'utf8' });
+  ], { cwd: process.cwd(), encoding: 'utf8' });
 
   assert.equal(save.status, 0, save.stderr || save.stdout);
 
   const startup = spawnSync(process.execPath, [
     'apps/cli/src/index.mjs'
   ], {
-    cwd: '/root/lucy-qa',
+    cwd: process.cwd(),
     env: { ...process.env, LUCY_QA_VAULT_PATH: tempRoot },
     encoding: 'utf8'
   });

@@ -40,10 +40,10 @@ const CLOUDFLARE_CRAWL_MAX_POLLS = Math.max(1, Number(process.env.LUCY_QA_CLOUDF
 const CLOUDFLARE_CRAWL_POLL_INTERVAL_MS = Math.max(200, Number(process.env.LUCY_QA_CLOUDFLARE_CRAWL_POLL_INTERVAL_MS || 500));
 const BROWSER_EXECUTABLE_CANDIDATES = [
   process.env.LUCY_QA_BROWSER_EXECUTABLE,
-  '/root/.cache/ms-playwright/chromium-1217/chrome-linux64/chrome',
-  '/root/.cache/ms-playwright/chromium-1208/chrome-linux64/chrome',
-  '/root/.cache/ms-playwright/chromium_headless_shell-1217/chrome-headless-shell-linux64/chrome-headless-shell',
-  '/root/.cache/ms-playwright/chromium_headless_shell-1208/chrome-headless-shell-linux64/chrome-headless-shell'
+  `${os.homedir()}/.cache/ms-playwright/chromium-1217/chrome-linux64/chrome`,
+  `${os.homedir()}/.cache/ms-playwright/chromium-1208/chrome-linux64/chrome`,
+  `${os.homedir()}/.cache/ms-playwright/chromium_headless_shell-1217/chrome-headless-shell-linux64/chrome-headless-shell`,
+  `${os.homedir()}/.cache/ms-playwright/chromium_headless_shell-1208/chrome-headless-shell-linux64/chrome-headless-shell`
 ].filter(Boolean);
 
 const toHeaderObject = (headers) => {

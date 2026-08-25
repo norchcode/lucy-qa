@@ -21,7 +21,7 @@ assert.match(unclear.intent.clarification_message, /Please specify one of these 
 assert.equal(unclear.intent.clarification_message, buildQaTypeClarificationMessage());
 
 const cli = spawnSync(process.execPath, ['apps/cli/src/index.mjs', 'qa', 'cases', 'Create login test coverage for checkout area', '--plain'], {
-  cwd: '/root/lucy-qa',
+  cwd: process.cwd(),
   encoding: 'utf8'
 });
 

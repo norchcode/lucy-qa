@@ -62,7 +62,7 @@ try {
     '--api-key-env', 'LUCY_TEST_GITHUB_COPILOT_TOKEN',
     '--model', 'gpt-4o',
     '--plain'
-  ], { cwd: '/root/lucy-qa', env, encoding: 'utf8' });
+  ], { cwd: process.cwd(), env, encoding: 'utf8' });
   assert.equal(setup.status, 0, setup.stderr || setup.stdout);
   assert.match(setup.stdout, /provider_name: github-copilot/i);
   assert.match(setup.stdout, /api_key_env: LUCY_TEST_GITHUB_COPILOT_TOKEN/i);
@@ -71,7 +71,7 @@ try {
     'apps/cli/src/index.mjs', 'ask', 'hello from lucy',
     '--provider', 'github-copilot',
     '--plain'
-  ], { cwd: '/root/lucy-qa', env, encoding: 'utf8' });
+  ], { cwd: process.cwd(), env, encoding: 'utf8' });
   assert.equal(ask.status, 0, ask.stderr || ask.stdout);
   assert.match(ask.stdout, /hello from copilot preset/i);
   assert.equal(lastChatRequest.headers.authorization, 'Bearer copilot-test-token');

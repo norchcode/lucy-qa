@@ -84,7 +84,7 @@ try {
     '--vault',
     vaultPath,
     '--plain'
-  ], { cwd: '/root/lucy-qa', encoding: 'utf8' });
+  ], { cwd: process.cwd(), encoding: 'utf8' });
 
   assert.equal(onboarding.status, 0, onboarding.stderr || onboarding.stdout);
   assert.match(onboarding.stdout, /jira_ready: yes/i);
@@ -98,12 +98,12 @@ try {
   const credentialsStat = fs.statSync(credentialsPath);
   assert.equal(credentialsStat.mode & 0o777, 0o600);
 
-  const knowledgePath = path.join(knowledgeDir, 'lucy-qa-example-test.json');
+  const knowledgePath = path.join(knowledgeDir, `${path.basename(process.cwd())}-example-test.json`);
   fs.writeFileSync(knowledgePath, JSON.stringify({
-    project_key: 'lucy-qa-example-test',
+    project_key: `${path.basename(process.cwd())}-example-test`,
     created_at: '2026-04-05T00:00:00.000Z',
     updated_at: '2026-04-05T00:00:00.000Z',
-    identifiers: { cwd: '/root/lucy-qa', hostnames: ['example.test'] },
+    identifiers: { cwd: process.cwd(), hostnames: ['example.test'] },
     stats: { runs_total: 1, passed_runs: 0, failed_runs: 1 },
     learned_frameworks: [],
     deployment_hints: [],
@@ -146,7 +146,7 @@ try {
     dom: { selector_strategy: 'data-testid and role-first', risks: [] },
     probe: { interactions: [] },
     crawl: { discovered_routes: [] },
-    knowledge: { project_key: 'lucy-qa-example-test' }
+    knowledge: { project_key: `${path.basename(process.cwd())}-example-test` }
   }, null, 2));
   fs.writeFileSync(path.join(runDir, 'qa-knowledge.json'), fs.readFileSync(knowledgePath, 'utf8'));
 
@@ -154,7 +154,7 @@ try {
     'apps/cli/src/index.mjs', 'qa', 'report', 'publish', runDir,
     '--vault', vaultPath,
     '--plain'
-  ], { cwd: '/root/lucy-qa', encoding: 'utf8' });
+  ], { cwd: process.cwd(), encoding: 'utf8' });
   assert.equal(publish.status, 0, publish.stderr || publish.stdout);
   assert.match(publish.stdout, /system: qase/i);
   assert.match(publish.stdout, /remote_run_id: 88/i);
@@ -164,7 +164,7 @@ try {
     '--target-url', 'https://example.test/login',
     '--vault', vaultPath,
     '--plain'
-  ], { cwd: '/root/lucy-qa', encoding: 'utf8' });
+  ], { cwd: process.cwd(), encoding: 'utf8' });
   assert.equal(fileRemote.status, 0, fileRemote.stderr || fileRemote.stdout);
   assert.match(fileRemote.stdout, /linked_bug_id: QA-321/i);
 

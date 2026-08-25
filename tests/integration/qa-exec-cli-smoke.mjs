@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
 
 const result = spawnSync(process.execPath, ['apps/cli/src/index.mjs', 'qa', 'exec', 'printf', 'hello', '--plain'], {
-  cwd: '/root/lucy-qa',
+  cwd: process.cwd(),
   encoding: 'utf8'
 });
 
