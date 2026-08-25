@@ -25,7 +25,7 @@ process.exit(1);
     path.join(tempRoot, 'artifacts'),
     '--plain'
   ], {
-    cwd: '/root/lucy-qa',
+    cwd: process.cwd(),
     env: {
       ...process.env,
       LUCY_QA_RUNNER_COMMAND: process.execPath,

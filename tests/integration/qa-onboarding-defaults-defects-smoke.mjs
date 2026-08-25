@@ -27,15 +27,15 @@ try {
     '--vault',
     vaultPath,
     '--plain'
-  ], { cwd: '/root/lucy-qa', encoding: 'utf8' });
+  ], { cwd: process.cwd(), encoding: 'utf8' });
   assert.equal(onboarding.status, 0, onboarding.stderr || onboarding.stdout);
 
-  const knowledgePath = path.join(knowledgeDir, 'lucy-qa-example-test.json');
+  const knowledgePath = path.join(knowledgeDir, `${path.basename(process.cwd())}-example-test.json`);
   fs.writeFileSync(knowledgePath, JSON.stringify({
-    project_key: 'lucy-qa-example-test',
+    project_key: `${path.basename(process.cwd())}-example-test`,
     created_at: '2026-04-05T00:00:00.000Z',
     updated_at: '2026-04-05T00:00:00.000Z',
-    identifiers: { cwd: '/root/lucy-qa', hostnames: ['example.test'] },
+    identifiers: { cwd: process.cwd(), hostnames: ['example.test'] },
     stats: { runs_total: 1, passed_runs: 0, failed_runs: 1 },
     learned_frameworks: [],
     deployment_hints: [],
@@ -72,7 +72,7 @@ try {
     '--target-url', 'https://example.test/login',
     '--vault', vaultPath,
     '--plain'
-  ], { cwd: '/root/lucy-qa', encoding: 'utf8' });
+  ], { cwd: process.cwd(), encoding: 'utf8' });
 
   assert.equal(link.status, 0, link.stderr || link.stdout);
   assert.match(link.stdout, /tracker_system: Jira/i);
@@ -91,14 +91,14 @@ try {
     dom: { selector_strategy: 'data-testid and role-first', risks: [] },
     probe: { interactions: [] },
     crawl: { discovered_routes: [] },
-    knowledge: { project_key: 'lucy-qa-example-test' }
+    knowledge: { project_key: `${path.basename(process.cwd())}-example-test` }
   }, null, 2));
   fs.writeFileSync(path.join(runDir, 'qa-knowledge.json'), fs.readFileSync(knowledgePath, 'utf8'));
 
   const bugs = spawnSync(process.execPath, [
     'apps/cli/src/index.mjs', 'qa', 'bugs', '--from-run', runDir, '--plain'
   ], {
-    cwd: '/root/lucy-qa',
+    cwd: process.cwd(),
     env: { ...process.env, LUCY_QA_VAULT_PATH: vaultPath },
     encoding: 'utf8'
   });

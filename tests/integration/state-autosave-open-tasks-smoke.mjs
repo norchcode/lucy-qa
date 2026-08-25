@@ -18,7 +18,7 @@ process.exit(1);
 `);
 
   const result = spawnSync(process.execPath, ['apps/cli/src/index.mjs', 'qa', 'run', 'tests/e2e/checkout.spec.js', '--artifacts-root', path.join(tempRoot, 'artifacts'), '--plain'], {
-    cwd: '/root/lucy-qa',
+    cwd: process.cwd(),
     env: {
       ...process.env,
       LUCY_QA_RUNNER_COMMAND: process.execPath,

@@ -15,7 +15,7 @@ try {
     '--vault',
     tempRoot,
     '--plain'
-  ], { cwd: '/root/lucy-qa', encoding: 'utf8' });
+  ], { cwd: process.cwd(), encoding: 'utf8' });
 
   assert.equal(partial.status, 0, partial.stderr || partial.stdout);
   assert.match(partial.stdout, /configured: no/i);
@@ -27,7 +27,7 @@ try {
   assert.doesNotMatch(partial.stdout, /question: Which QA\/test management system do you use/i);
 
   const startup = spawnSync(process.execPath, ['apps/cli/src/index.mjs'], {
-    cwd: '/root/lucy-qa',
+    cwd: process.cwd(),
     env: { ...process.env, LUCY_QA_VAULT_PATH: tempRoot },
     encoding: 'utf8'
   });
@@ -51,7 +51,7 @@ try {
     '--vault',
     tempRoot,
     '--plain'
-  ], { cwd: '/root/lucy-qa', encoding: 'utf8' });
+  ], { cwd: process.cwd(), encoding: 'utf8' });
 
   assert.equal(finish.status, 0, finish.stderr || finish.stdout);
   assert.match(finish.stdout, /configured: yes/i);

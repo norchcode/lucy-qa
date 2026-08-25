@@ -19,7 +19,7 @@ try {
   };
 
   const install = spawnSync('bash', ['scripts/install-lucy.sh'], {
-    cwd: '/root/lucy-qa',
+    cwd: process.cwd(),
     env,
     encoding: 'utf8'
   });
@@ -27,7 +27,7 @@ try {
   assert.ok(fs.existsSync(path.join(installDir, 'lucy')));
 
   const launch = spawnSync('lucy', [], {
-    cwd: '/root/lucy-qa',
+    cwd: process.cwd(),
     env,
     encoding: 'utf8'
   });
@@ -35,7 +35,7 @@ try {
   assert.match(launch.stdout, /Lucy QA/i);
 
   const providerList = spawnSync('lucy', ['provider', 'presets', '--plain'], {
-    cwd: '/root/lucy-qa',
+    cwd: process.cwd(),
     env,
     encoding: 'utf8'
   });

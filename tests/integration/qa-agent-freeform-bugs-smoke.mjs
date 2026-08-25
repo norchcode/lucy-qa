@@ -37,11 +37,11 @@ try {
 
   const result = spawnSync(process.execPath, [
     'apps/cli/src/index.mjs',
-    'draft bugs from latest run',
+    'qa', 'agent', 'draft bugs from latest run',
     '--vault',
     vaultPath,
     '--plain'
-  ], { cwd: '/root/lucy-qa', encoding: 'utf8' });
+  ], { cwd: process.cwd(), encoding: 'utf8' });
 
   assert.equal(result.status, 0, result.stderr || result.stdout);
   assert.match(result.stdout, /Lucy QA autonomous agent/i);

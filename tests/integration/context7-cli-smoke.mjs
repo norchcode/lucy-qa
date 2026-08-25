@@ -25,7 +25,7 @@ try {
     'playwright locator.filter',
     '--plain'
   ], {
-    cwd: '/root/lucy-qa',
+    cwd: process.cwd(),
     env: { ...process.env, LUCY_QA_CONTEXT7_FIXTURE: fixturePath },
     encoding: 'utf8'
   });

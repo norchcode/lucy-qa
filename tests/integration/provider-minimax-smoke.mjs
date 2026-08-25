@@ -53,7 +53,7 @@ try {
 
   // 1. Verify minimax appears in presets
   const presets = await runNode(['apps/cli/src/index.mjs', 'provider', 'presets', '--plain'], {
-    cwd: '/root/lucy-qa', env: baseEnv, encoding: 'utf8'
+    cwd: process.cwd(), env: baseEnv, encoding: 'utf8'
   });
   assert.equal(presets.status, 0, presets.stderr || presets.stdout);
   assert.match(presets.stdout, /minimax/i);
@@ -66,7 +66,7 @@ try {
     '--api-key-env', 'MINIMAX_API_KEY',
     '--set-default',
     '--plain'
-  ], { cwd: '/root/lucy-qa', env: baseEnv, encoding: 'utf8' });
+  ], { cwd: process.cwd(), env: baseEnv, encoding: 'utf8' });
   assert.equal(setup.status, 0, setup.stderr || setup.stdout);
   assert.match(setup.stdout, /provider_name: minimax/i);
   assert.match(setup.stdout, /base_url: https:\/\/api\.minimax\.chat\/v1/i);
@@ -90,7 +90,7 @@ try {
     'use minimax and make it default',
     '--plain'
   ], {
-    cwd: '/root/lucy-qa',
+    cwd: process.cwd(),
     env: baseEnv,
     encoding: 'utf8'
   });
@@ -106,12 +106,12 @@ try {
     '--api-key-env', 'MINIMAX_API_KEY',
     '--model', 'MiniMax-Text-01',
     '--plain'
-  ], { cwd: '/root/lucy-qa', env: baseEnv, encoding: 'utf8' });
+  ], { cwd: process.cwd(), env: baseEnv, encoding: 'utf8' });
   assert.equal(setupLocal.status, 0, setupLocal.stderr || setupLocal.stdout);
 
   const ask = await runNode([
     'apps/cli/src/index.mjs', 'ask', 'hello minimax', '--provider', 'minimax-local', '--plain'
-  ], { cwd: '/root/lucy-qa', env: baseEnv, encoding: 'utf8' });
+  ], { cwd: process.cwd(), env: baseEnv, encoding: 'utf8' });
   assert.equal(ask.status, 0, ask.stderr || ask.stdout);
   assert.match(ask.stdout, /hello from minimax/i);
   assert.equal(lastChatRequest?.authorization, 'Bearer minimax-test-api-key');

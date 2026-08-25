@@ -21,7 +21,7 @@ try {
     '--provider',
     'github-copilot'
   ], {
-    cwd: '/root/lucy-qa',
+    cwd: process.cwd(),
     env,
     encoding: 'utf8'
   });
@@ -41,7 +41,7 @@ try {
     'github-copilot',
     '--set-default'
   ], {
-    cwd: '/root/lucy-qa',
+    cwd: process.cwd(),
     env,
     encoding: 'utf8'
   });

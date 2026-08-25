@@ -8,7 +8,7 @@ const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'lucy-qa-first-install-an
 
 try {
   const result = spawnSync(process.execPath, ['apps/cli/src/index.mjs'], {
-    cwd: '/root/lucy-qa',
+    cwd: process.cwd(),
     env: { ...process.env, HOME: tempRoot, LUCY_QA_VAULT_PATH: tempRoot, FORCE_COLOR: '1' },
     encoding: 'utf8'
   });

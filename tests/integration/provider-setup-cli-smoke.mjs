@@ -56,7 +56,7 @@ try {
   };
 
   const presets = await runNode(['apps/cli/src/index.mjs', 'provider', 'presets', '--plain'], {
-    cwd: '/root/lucy-qa', env: baseEnv, encoding: 'utf8'
+    cwd: process.cwd(), env: baseEnv, encoding: 'utf8'
   });
   assert.equal(presets.status, 0, presets.stderr || presets.stdout);
   assert.match(presets.stdout, /cliproxyapi/i);
@@ -73,7 +73,7 @@ try {
     '--model', 'claude-sonnet-4-6',
     '--set-default',
     '--plain'
-  ], { cwd: '/root/lucy-qa', env: baseEnv, encoding: 'utf8' });
+  ], { cwd: process.cwd(), env: baseEnv, encoding: 'utf8' });
   assert.equal(adacode.status, 0, adacode.stderr || adacode.stdout);
   assert.match(adacode.stdout, /provider_name: adacode/i);
   assert.match(adacode.stdout, /base_url: https:\/\/api.adacode.ai\/v1/i);
@@ -87,20 +87,20 @@ try {
     '--model', 'bridge-model',
     '--label', 'Custom Bridge',
     '--plain'
-  ], { cwd: '/root/lucy-qa', env: baseEnv, encoding: 'utf8' });
+  ], { cwd: process.cwd(), env: baseEnv, encoding: 'utf8' });
   assert.equal(custom.status, 0, custom.stderr || custom.stdout);
   assert.match(custom.stdout, /provider_name: custom-bridge/i);
   assert.match(custom.stdout, /api_key_env: LUCY_TEST_CUSTOM_PROVIDER_KEY/i);
 
   const show = await runNode(['apps/cli/src/index.mjs', 'provider', 'show', 'custom-bridge'], {
-    cwd: '/root/lucy-qa', env: baseEnv, encoding: 'utf8'
+    cwd: process.cwd(), env: baseEnv, encoding: 'utf8'
   });
   assert.equal(show.status, 0, show.stderr || show.stdout);
   assert.match(show.stdout, /base_url: http:\/\/127.0.0.1:/i);
   assert.match(show.stdout, /type: openai-compatible/i);
 
   const ask = await runNode(['apps/cli/src/index.mjs', 'ask', 'hello lucy', '--provider', 'custom-bridge', '--plain'], {
-    cwd: '/root/lucy-qa', env: baseEnv, encoding: 'utf8'
+    cwd: process.cwd(), env: baseEnv, encoding: 'utf8'
   });
   assert.equal(ask.status, 0, ask.stderr || ask.stdout);
   assert.match(ask.stdout, /hello from custom bridge/i);

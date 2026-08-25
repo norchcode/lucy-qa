@@ -19,7 +19,7 @@ try {
     '--vault',
     tempRoot,
     '--plain'
-  ], { cwd: '/root/lucy-qa', encoding: 'utf8' });
+  ], { cwd: process.cwd(), encoding: 'utf8' });
 
   assert.equal(save.status, 0, save.stderr || save.stdout);
   assert.match(save.stdout, /Memory note saved/i);
@@ -32,7 +32,7 @@ try {
     '--vault',
     tempRoot,
     '--plain'
-  ], { cwd: '/root/lucy-qa', encoding: 'utf8' });
+  ], { cwd: process.cwd(), encoding: 'utf8' });
 
   assert.equal(search.status, 0, search.stderr || search.stdout);
   assert.match(search.stdout, /Memory search results/i);
